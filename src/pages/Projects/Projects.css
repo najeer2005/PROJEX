@@ -1,0 +1,525 @@
+/* ==========================================
+   PAGE CONTENT
+========================================== */
+
+.page-content{
+
+    margin-left:270px;
+    margin-top:80px;
+
+    padding:24px;
+
+    min-height:calc(100vh - 80px);
+
+    background:#F8FAFC;
+
+}
+
+/* ==========================================
+   PAGE HEADER
+========================================== */
+
+.page-header{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    margin-bottom:24px;
+
+}
+
+.page-header h2{
+
+    font-size:30px;
+    color:#0F172A;
+    margin-bottom:6px;
+
+}
+
+.page-header p{
+
+    color:#64748B;
+    font-size:15px;
+
+}
+
+.primary-btn{
+
+    display:flex;
+    align-items:center;
+    gap:8px;
+
+    padding:12px 20px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#2563EB;
+
+    color:#FFFFFF;
+
+    cursor:pointer;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    transition:.3s;
+
+}
+
+.primary-btn:hover{
+
+    background:#1D4ED8;
+
+}
+
+/* ==========================================
+   PROJECT STATS
+========================================== */
+
+.project-stats{
+
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:20px;
+
+    margin-bottom:25px;
+
+}
+
+.project-stat-card{
+
+    background:#FFFFFF;
+
+    border:1px solid #E2E8F0;
+
+    border-radius:18px;
+
+    padding:22px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+
+    box-shadow:0 2px 8px rgba(15,23,42,.05);
+
+    transition:.3s;
+
+}
+
+.project-stat-card:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:0 10px 25px rgba(15,23,42,.08);
+
+}
+
+.project-stat-card svg{
+
+    font-size:32px;
+
+    color:#2563EB;
+
+}
+
+.project-stat-card h3{
+
+    font-size:28px;
+
+    color:#0F172A;
+
+}
+
+.project-stat-card span{
+
+    color:#64748B;
+
+    font-size:14px;
+
+}
+
+/* ==========================================
+   TOOLBAR
+========================================== */
+
+.toolbar{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:20px;
+
+}
+
+.filters{
+
+    display:flex;
+
+    gap:12px;
+
+}
+
+.filters select{
+
+    height:44px;
+
+    padding:0 14px;
+
+    border:1px solid #CBD5E1;
+
+    border-radius:10px;
+
+    background:#8b4848;
+
+    cursor:pointer;
+
+    outline:none;
+
+}
+
+/* ==========================================
+   SEARCH
+========================================== */
+
+.search-box{
+
+    width:360px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    background:#FFFFFF;
+
+    border:1px solid #CBD5E1;
+
+    border-radius:12px;
+
+    padding:0 16px;
+
+    height:46px;
+
+}
+
+.search-box input{
+
+    flex:1;
+
+    border:none;
+
+    outline:none;
+
+    background:transparent;
+
+    font-size:15px;
+
+}
+
+.search-box svg{
+
+    color:#64748B;
+
+    font-size:20px;
+
+}
+
+/* ==========================================
+   TABLE CARD
+========================================== */
+
+.table-card{
+
+    background:#FFFFFF;
+
+    border-radius:18px;
+
+    border:1px solid #E2E8F0;
+
+    overflow:hidden;
+
+    box-shadow:0 2px 8px rgba(15,23,42,.05);
+
+}
+
+/* ==========================================
+   TABLE
+========================================== */
+
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+thead{
+
+    background:#F8FAFC;
+
+}
+
+thead th{
+
+    padding:18px;
+
+    text-align:left;
+
+    font-size:14px;
+
+    color:#475569;
+
+    font-weight:600;
+
+}
+
+tbody td{
+
+    padding:18px;
+
+    border-top:1px solid #F1F5F9;
+
+    color:#334155;
+
+    font-size:14px;
+
+}
+
+tbody tr:hover{
+
+    background:#F8FAFC;
+
+}
+
+/* ==========================================
+   STATUS
+========================================== */
+
+.status{
+
+    padding:6px 12px;
+
+    border-radius:20px;
+
+    font-size:12px;
+
+    font-weight:600;
+
+}
+
+.status.active{
+
+    background:#DCFCE7;
+
+    color:#16A34A;
+
+}
+
+.status.completed{
+
+    background:#DBEAFE;
+
+    color:#2563EB;
+
+}
+
+.status.planning{
+
+    background:#FEF3C7;
+
+    color:#D97706;
+
+}
+
+/* ==========================================
+   PRIORITY
+========================================== */
+
+.priority{
+
+    padding:6px 12px;
+
+    border-radius:20px;
+
+    font-size:12px;
+
+    font-weight:600;
+
+}
+
+.priority.high{
+
+    background:#FEE2E2;
+
+    color:#DC2626;
+
+}
+
+.priority.medium{
+
+    background:#FEF3C7;
+
+    color:#D97706;
+
+}
+
+.priority.low{
+
+    background:#DCFCE7;
+
+    color:#16A34A;
+
+}
+
+/* ==========================================
+   PROGRESS
+========================================== */
+
+.progress{
+
+    width:120px;
+
+    height:8px;
+
+    background:#E2E8F0;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    margin-bottom:6px;
+
+}
+
+.progress-fill{
+
+    height:100%;
+
+    background:#2563EB;
+
+}
+
+/* ==========================================
+   ACTIONS
+========================================== */
+
+.action{
+
+    width:36px;
+
+    height:36px;
+
+    border:none;
+
+    border-radius:10px;
+
+    margin-right:8px;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.edit{
+
+    background:#DBEAFE;
+
+    color:#2563EB;
+
+}
+
+.delete{
+
+    background:#FEE2E2;
+
+    color:#DC2626;
+
+}
+
+.action:hover{
+
+    transform:scale(1.05);
+
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media(max-width:1200px){
+
+    .project-stats{
+
+        grid-template-columns:repeat(2,1fr);
+
+    }
+
+}
+
+@media(max-width:992px){
+
+    .toolbar{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:15px;
+
+    }
+
+    .search-box{
+
+        width:100%;
+
+    }
+
+}
+
+@media(max-width:768px){
+
+    .page-content{
+
+        margin-left:80px;
+
+        padding:18px;
+
+    }
+
+    .project-stats{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .table-card{
+
+        overflow-x:auto;
+
+    }
+
+}
+
+@media(max-width:500px){
+
+    .page-content{
+
+        margin-left:0;
+
+    }
+
+}

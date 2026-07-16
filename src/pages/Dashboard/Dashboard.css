@@ -1,0 +1,994 @@
+/* ==========================================
+   DASHBOARD LAYOUT
+========================================== */
+
+.dashboard{
+
+    margin-left:270px;
+
+    margin-top:80px;
+
+    padding:24px;
+
+    background:#F8FAFC;
+
+    min-height:calc(100vh - 80px);
+
+}
+
+/* ==========================================
+   DASHBOARD HEADER
+========================================== */
+
+.dashboard-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:24px;
+
+}
+
+.dashboard-header h2{
+
+    font-size:30px;
+
+    font-weight:700;
+
+    color:#0F172A;
+
+    margin-bottom:6px;
+
+}
+
+.dashboard-header p{
+
+    font-size:15px;
+
+    color:#64748B;
+
+}
+
+.dashboard-date{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    background:#FFFFFF;
+
+    padding:12px 18px;
+
+    border-radius:12px;
+
+    border:1px solid #E2E8F0;
+
+    color:#475569;
+
+    font-size:15px;
+
+}
+
+.dashboard-date svg{
+
+    color:#2563EB;
+
+    font-size:20px;
+
+}
+
+/* ==========================================
+   KPI GRID
+========================================== */
+
+.stats-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(5,1fr);
+
+    gap:20px;
+
+    margin-bottom:24px;
+
+}
+
+/* ==========================================
+   KPI CARD
+========================================== */
+
+.stat-card{
+
+    background:#FFFFFF;
+
+    border:1px solid #E2E8F0;
+
+    border-radius:18px;
+
+    padding:22px;
+
+    transition:.3s;
+
+    box-shadow:0 2px 8px rgba(15,23,42,.05);
+
+}
+
+.stat-card:hover{
+
+    transform:translateY(-4px);
+
+    box-shadow:0 10px 25px rgba(15,23,42,.08);
+
+}
+
+.stat-icon{
+
+    width:54px;
+
+    height:54px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    border-radius:14px;
+
+    font-size:24px;
+
+    margin-bottom:18px;
+
+}
+
+.stat-card h2{
+
+    font-size:34px;
+
+    color:#0F172A;
+
+    margin-bottom:8px;
+
+}
+
+.stat-card h4{
+
+    font-size:17px;
+
+    color:#334155;
+
+    margin-bottom:8px;
+
+}
+
+.stat-card p{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    font-size:14px;
+
+    color:#16A34A;
+
+}
+
+/* ==========================================
+   ICON COLORS
+========================================== */
+
+.blue{
+
+    background:#DBEAFE;
+
+    color:#2563EB;
+
+}
+
+.orange{
+
+    background:#FEF3C7;
+
+    color:#D97706;
+
+}
+
+.green{
+
+    background:#DCFCE7;
+
+    color:#16A34A;
+
+}
+
+.red{
+
+    background:#FEE2E2;
+
+    color:#DC2626;
+
+}
+
+.purple{
+
+    background:#F3E8FF;
+
+    color:#9333EA;
+
+}
+
+/* ==========================================
+   TREND ICON
+========================================== */
+
+.trend-icon{
+
+    font-size:15px;
+
+}
+/* ==========================================
+   MAIN GRID
+========================================== */
+
+.dashboard-grid{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:24px;
+
+    margin-bottom:24px;
+
+}
+
+/* ==========================================
+   DASHBOARD CARD
+========================================== */
+
+.dashboard-card{
+
+    background:#FFFFFF;
+
+    border:1px solid #E2E8F0;
+
+    border-radius:18px;
+
+    padding:24px;
+
+    box-shadow:0 2px 8px rgba(15,23,42,.05);
+
+    transition:.3s;
+
+}
+
+.dashboard-card:hover{
+
+    box-shadow:0 8px 20px rgba(15,23,42,.08);
+
+}
+
+/* ==========================================
+   CARD HEADER
+========================================== */
+
+.card-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:22px;
+
+}
+
+.card-header h3{
+
+    font-size:19px;
+
+    color:#0F172A;
+
+    font-weight:600;
+
+}
+
+.card-header button{
+
+    border:none;
+
+    background:transparent;
+
+    color:#2563EB;
+
+    cursor:pointer;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    transition:.3s;
+
+}
+
+.card-header button:hover{
+
+    color:#1D4ED8;
+
+}
+
+/* ==========================================
+   RECENT TASKS
+========================================== */
+
+.task-list{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:18px;
+
+}
+
+.task-item{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:14px 0;
+
+    border-bottom:1px solid #F1F5F9;
+
+}
+
+.task-item:last-child{
+
+    border-bottom:none;
+
+}
+
+.task-left{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:5px;
+
+}
+
+.task-left strong{
+
+    font-size:15px;
+
+    color:#0F172A;
+
+}
+
+.task-left span{
+
+    font-size:13px;
+
+    color:#64748B;
+
+}
+
+.task-right{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:flex-end;
+
+    gap:6px;
+
+}
+
+.task-right small{
+
+    color:#64748B;
+
+    font-size:12px;
+
+}
+
+/* ==========================================
+   PRIORITY BADGES
+========================================== */
+
+.priority{
+
+    padding:5px 12px;
+
+    border-radius:30px;
+
+    font-size:12px;
+
+    font-weight:600;
+
+}
+
+.priority.high{
+
+    background:#FEE2E2;
+
+    color:#DC2626;
+
+}
+
+.priority.medium{
+
+    background:#FEF3C7;
+
+    color:#D97706;
+
+}
+
+.priority.low{
+
+    background:#DCFCE7;
+
+    color:#16A34A;
+
+}
+
+/* ==========================================
+   RECENT ACTIVITY
+========================================== */
+
+.activity-list{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:18px;
+
+}
+
+.activity-item{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    padding:14px 0;
+
+    border-bottom:1px solid #F1F5F9;
+
+}
+
+.activity-item:last-child{
+
+    border-bottom:none;
+
+}
+
+.activity-icon{
+
+    width:42px;
+
+    height:42px;
+
+    border-radius:50%;
+
+    background:#DBEAFE;
+
+    color:#2563EB;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:18px;
+
+    flex-shrink:0;
+
+}
+
+.activity-content{
+
+    flex:1;
+
+}
+
+.activity-content strong{
+
+    display:block;
+
+    color:#0F172A;
+
+    font-size:15px;
+
+    margin-bottom:3px;
+
+}
+
+.activity-content p{
+
+    color:#64748B;
+
+    font-size:13px;
+
+}
+
+.activity-item small{
+
+    color:#94A3B8;
+
+    font-size:12px;
+
+    white-space:nowrap;
+
+}
+/* ==========================================
+   ACTIVE PROJECTS
+========================================== */
+
+.project-list{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:20px;
+
+}
+
+.project-item{
+
+    padding:14px 0;
+
+    border-bottom:1px solid #F1F5F9;
+
+}
+
+.project-item:last-child{
+
+    border-bottom:none;
+
+}
+
+.project-details{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:12px;
+
+}
+
+.project-details strong{
+
+    font-size:15px;
+
+    color:#0F172A;
+
+    font-weight:600;
+
+}
+
+.project-details span{
+
+    font-size:13px;
+
+    color:#64748B;
+
+}
+
+.project-progress{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+}
+
+.progress-bar{
+
+    flex:1;
+
+    height:8px;
+
+    background:#E2E8F0;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+}
+
+.progress-fill{
+
+    height:100%;
+
+    background:#2563EB;
+
+    border-radius:20px;
+
+    transition:width .4s ease;
+
+}
+
+.project-progress small{
+
+    width:45px;
+
+    text-align:right;
+
+    font-size:13px;
+
+    color:#475569;
+
+    font-weight:600;
+
+}
+
+/* ==========================================
+   TEAM PERFORMANCE
+========================================== */
+
+.team-list{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:18px;
+
+}
+
+.team-item{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    padding:14px 0;
+
+    border-bottom:1px solid #F1F5F9;
+
+}
+
+.team-item:last-child{
+
+    border-bottom:none;
+
+}
+
+.team-avatar{
+
+    width:44px;
+
+    height:44px;
+
+    border-radius:50%;
+
+    background:#DBEAFE;
+
+    color:#2563EB;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-weight:700;
+
+    font-size:16px;
+
+    flex-shrink:0;
+
+}
+
+.team-details{
+
+    flex:1;
+
+}
+
+.team-details strong{
+
+    display:block;
+
+    color:#0F172A;
+
+    font-size:15px;
+
+    margin-bottom:4px;
+
+}
+
+.team-details span{
+
+    color:#64748B;
+
+    font-size:13px;
+
+}
+
+.team-icon{
+
+    font-size:22px;
+
+    color:#94A3B8;
+
+}
+/* ==========================================
+   THIRD GRID
+========================================== */
+
+.third-grid{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:24px;
+
+    margin-bottom:24px;
+
+}
+
+/* ==========================================
+   UPCOMING DEADLINES
+========================================== */
+
+.deadline-list{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:18px;
+
+}
+
+.deadline-item{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:14px 0;
+
+    border-bottom:1px solid #F1F5F9;
+
+}
+
+.deadline-item:last-child{
+
+    border-bottom:none;
+
+}
+
+.deadline-info{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:5px;
+
+}
+
+.deadline-info strong{
+
+    font-size:15px;
+
+    color:#0F172A;
+
+}
+
+.deadline-info span{
+
+    font-size:13px;
+
+    color:#64748B;
+
+}
+
+.deadline-date{
+
+    padding:6px 12px;
+
+    background:#FEF3C7;
+
+    color:#D97706;
+
+    border-radius:20px;
+
+    font-size:12px;
+
+    font-weight:600;
+
+}
+
+/* ==========================================
+   QUICK ACTIONS
+========================================== */
+
+.quick-actions{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:16px;
+
+}
+
+.action-btn{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:10px;
+
+    height:60px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:#F8FAFC;
+
+    border:1px solid #E2E8F0;
+
+    color:#334155;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.action-btn:hover{
+
+    background:#2563EB;
+
+    color:#FFFFFF;
+
+    transform:translateY(-2px);
+
+}
+
+/* ==========================================
+   SCROLLBAR
+========================================== */
+
+.dashboard::-webkit-scrollbar{
+
+    width:8px;
+
+}
+
+.dashboard::-webkit-scrollbar-thumb{
+
+    background:#CBD5E1;
+
+    border-radius:20px;
+
+}
+
+.dashboard::-webkit-scrollbar-track{
+
+    background:transparent;
+
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media(max-width:1200px){
+
+    .stats-grid{
+
+        grid-template-columns:repeat(3,1fr);
+
+    }
+
+}
+
+@media(max-width:992px){
+
+    .stats-grid{
+
+        grid-template-columns:repeat(2,1fr);
+
+    }
+
+    .dashboard-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .third-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
+
+@media(max-width:768px){
+
+    .dashboard{
+
+        margin-left:80px;
+
+        padding:18px;
+
+    }
+
+    .dashboard-header{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:15px;
+
+    }
+
+    .stats-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .quick-actions{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
+
+@media(max-width:500px){
+
+    .dashboard{
+
+        margin-left:0;
+
+        padding:15px;
+
+    }
+
+}

@@ -1,0 +1,164 @@
+/* ===========================
+   SIDEBAR
+=========================== */
+
+.sidebar{
+    width:270px;
+    height:100vh;
+    background:#FFFFFF;
+    border-right:1px solid #E2E8F0;
+    display:flex;
+    flex-direction:column;
+    padding:25px 18px;
+    position:fixed;
+    left:0;
+    top:0;
+    overflow-y:auto;
+}
+
+/* ===========================
+   LOGO
+=========================== */
+
+.sidebar-logo{
+    margin-bottom:35px;
+    padding-bottom:20px;
+    border-bottom:1px solid #E2E8F0;
+}
+
+.sidebar-logo h2{
+    font-size:28px;
+    color:#2563EB;
+    font-weight:700;
+    letter-spacing:1px;
+    margin-bottom:5px;
+}
+
+.sidebar-logo p{
+    font-size:13px;
+    color:#64748B;
+}
+
+/* ===========================
+   SECTION
+=========================== */
+
+.sidebar-section{
+    margin-bottom:28px;
+}
+
+.sidebar-section h4{
+    font-size:12px;
+    color:#94A3B8;
+    letter-spacing:1px;
+    margin-bottom:12px;
+    padding-left:12px;
+    text-transform:uppercase;
+}
+
+/* ===========================
+   LINKS
+=========================== */
+
+.sidebar-link{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:14px 16px;
+    margin-bottom:8px;
+    border-radius:12px;
+    text-decoration:none;
+    color:#475569;
+    font-size:15px;
+    font-weight:500;
+    transition:0.3s;
+}
+
+.sidebar-link svg{
+    font-size:22px;
+}
+
+/* Hover */
+
+.sidebar-link:hover{
+    background:#EFF6FF;
+    color:#2563EB;
+    transform:translateX(4px);
+}
+
+/* Active Link */
+
+.sidebar-link.active{
+    background:#2563EB;
+    color:#FFFFFF;
+    font-weight:600;
+}
+
+.sidebar-link.active svg{
+    color:#FFFFFF;
+}
+
+/* ===========================
+   LOGOUT
+=========================== */
+
+.logout{
+    color:#DC2626;
+}
+
+.logout:hover{
+    background:#FEF2F2;
+    color:#DC2626;
+}
+
+/* ===========================
+   SCROLLBAR
+=========================== */
+
+.sidebar::-webkit-scrollbar{
+    width:6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb{
+    background:#CBD5E1;
+    border-radius:10px;
+}
+
+/* ===========================
+   RESPONSIVE
+=========================== */
+
+@media(max-width:992px){
+
+    .sidebar{
+        width:80px;
+        padding:20px 10px;
+    }
+
+    .sidebar-logo p,
+    .sidebar-section h4,
+    .sidebar-link span{
+        display:none;
+    }
+
+    .sidebar-logo{
+        display:flex;
+        justify-content:center;
+        border:none;
+        margin-bottom:30px;
+    }
+
+    .sidebar-logo h2{
+        font-size:24px;
+    }
+
+    .sidebar-link{
+        justify-content:center;
+        padding:14px;
+    }
+
+    .sidebar-link svg{
+        font-size:24px;
+    }
+
+}

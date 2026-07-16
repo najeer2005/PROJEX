@@ -1,0 +1,187 @@
+/* ===========================
+   RESET
+=========================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Segoe UI",sans-serif;
+}
+
+body{
+    background:#F4F7FC;
+}
+
+/* ===========================
+   PAGE
+=========================== */
+
+.register-page{
+    width:100%;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:30px;
+    background:linear-gradient(135deg,#EEF4FF,#F8FAFC);
+}
+
+/* ===========================
+   CARD
+=========================== */
+
+.register-card{
+    width:750px;
+    background:#ffffff;
+    border-radius:18px;
+    padding:35px 40px;
+    box-shadow:0 15px 40px rgba(0,0,0,.08);
+}
+
+.register-card h2{
+    text-align:center;
+    font-size:32px;
+    color:#1E293B;
+    margin-bottom:8px;
+}
+
+.register-card>p{
+    text-align:center;
+    color:#64748B;
+    margin-bottom:30px;
+    font-size:15px;
+}
+
+/* ===========================
+   FORM GRID
+=========================== */
+
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px 25px;
+}
+
+/* ===========================
+   INPUT GROUP
+=========================== */
+
+.input-group{
+    display:flex;
+    flex-direction:column;
+}
+
+.input-group label{
+    margin-bottom:7px;
+    color:#334155;
+    font-size:14px;
+    font-weight:600;
+}
+
+.input-group input{
+    width:100%;
+    padding:13px 15px;
+    border:1px solid #CBD5E1;
+    border-radius:10px;
+    outline:none;
+    font-size:15px;
+    transition:.3s;
+    color:#1E293B;
+    background:#fff;
+}
+
+.input-group input::placeholder{
+    color:#94A3B8;
+}
+
+.input-group input:focus{
+    border-color:#2563EB;
+    box-shadow:0 0 8px rgba(37,99,235,.18);
+}
+
+/* ===========================
+   PASSWORD
+=========================== */
+
+.password-box{
+    position:relative;
+}
+
+.password-box input{
+    padding-right:70px;
+}
+
+.show-btn{
+    position:absolute;
+    right:15px;
+    top:50%;
+    transform:translateY(-50%);
+    color:#2563EB;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    user-select:none;
+}
+
+/* ===========================
+   BUTTON
+=========================== */
+
+.register-btn{
+    width:100%;
+    margin-top:30px;
+    padding:15px;
+    border:none;
+    border-radius:10px;
+    background:#2563EB;
+    color:white;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.register-btn:hover{
+    background:#1D4ED8;
+    transform:translateY(-2px);
+    box-shadow:0 10px 20px rgba(37,99,235,.25);
+}
+
+/* ===========================
+   BOTTOM
+=========================== */
+
+.bottom-text{
+    text-align:center;
+    margin-top:22px;
+    color:#64748B;
+    font-size:15px;
+}
+
+.bottom-text a{
+    color:#2563EB;
+    text-decoration:none;
+    font-weight:600;
+}
+
+.bottom-text a:hover{
+    text-decoration:underline;
+}
+
+/* ===========================
+   RESPONSIVE
+=========================== */
+
+@media(max-width:768px){
+
+    .register-card{
+        width:100%;
+        padding:25px;
+    }
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+}
