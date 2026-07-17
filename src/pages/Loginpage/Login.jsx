@@ -1,20 +1,55 @@
 import { useState } from "react";
 import "./Login.css";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 function Login() {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
+    const [errors, setErrors] = useState({});
 
     const navigate = useNavigate();
 
-    function SignIn(){
-        navigate("/register")
+    function validateForm() {
+
+    let newErrors = {};
+
+    if (!email.trim()) {
+
+        newErrors.email = "Email is required";
+
+    } else if (
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+    ) {
+
+        newErrors.email = "Enter a valid email address";
+
     }
+
+    if (!password.trim()) {
+
+        newErrors.password = "Password is required";
+
+    } else if (password.length < 8) {
+
+        newErrors.password =
+            "Password must be at least 8 characters";
+
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+
+}
     function handleSubmit(e) {
     e.preventDefault();
+    if (!validateForm()) {
+
+    return;
+
+}
 
     const storedUser = JSON.parse(localStorage.getItem("user"));
 
@@ -26,7 +61,7 @@ function Login() {
 
     // Validate credentials
     if (
-        email === storedUser.officialEmail &&
+        email.trim() === storedUser.officialEmail.trim() &&
         password === storedUser.password
     ) {
         alert("Login Successful!");
@@ -104,8 +139,25 @@ function Login() {
                             type="email"
                             placeholder="Enter your email"
                             value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            onChange={(e) => {
+                                setEmail(e.target.value);
+
+                                setErrors({
+                                ...errors,
+                                email: ""
+                                });
+
+                            }}
                         />
+                        {errors.email && (
+
+                            <p className="error-text">
+
+                            {errors.email}
+
+                            </p>
+
+                        )}
 
                         <label>Password</label>
 
@@ -115,7 +167,13 @@ function Login() {
                                 type={showPassword ? "text" : "password"}
                                 placeholder="Enter your password"
                                 value={password}
-                                onChange={(e) => setPassword(e.target.value)}
+                                onChange={(e) => {
+                                    setPassword(e.target.value);
+                                    setErrors({
+                                        ...errors,
+                                        password: ""
+                                    });
+                                }}
                             />
 
                             <span
@@ -126,6 +184,12 @@ function Login() {
                             </span>
 
                         </div>
+
+                        {errors.password && (
+                            <p className="error-text">
+                                {errors.password}
+                            </p>
+                        )}
 
                         <div className="options">
 

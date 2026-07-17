@@ -1,4 +1,4 @@
-import "./Calender.css";
+import "./Calendar.css";
 
 import {
   HiMagnifyingGlass,

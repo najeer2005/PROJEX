@@ -244,3 +244,16 @@ form input:focus{
     }
 
 }
+.error-text{
+
+    color:#DC2626;
+
+    font-size:13px;
+
+    margin-top:6px;
+
+    margin-bottom:12px;
+
+    font-weight:500;
+
+}
