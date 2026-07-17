@@ -12,49 +12,78 @@ function Register() {
     const [phoneNumber, setPhoneNumber] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [Num,setNum]=useState("")
     const [showPassword, setShowPassword] = useState(false);
-    const [PMSG,setPMSG]=useState("");
     const passwordRegex=/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const [errors, setErrors] = useState({});
+
+    function validateForm() {
+
+    let newErrors = {};
+
+    if (!fullName.trim()) {
+        newErrors.fullName = "Full Name is required";
+    }
+
+    if (!employeeId.trim()) {
+        newErrors.employeeId = "Employee ID is required";
+    }
+
+    if (!officialEmail.trim()) {
+        newErrors.officialEmail = "Official Email is required";
+    } else if (
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(officialEmail)
+    ) {
+        newErrors.officialEmail = "Enter a valid email";
+    }
+
+    if (!/^\d{10}$/.test(phoneNumber)) {
+        newErrors.phoneNumber = "Enter a valid 10-digit phone number";
+    }
+
+    if (!passwordRegex.test(password)) {
+        newErrors.password = "Choose a strong password";
+    }
+
+    if (!confirmPassword.trim()) {
+        newErrors.confirmPassword = "Confirm Password is required";
+    } else if (password !== confirmPassword) {
+        newErrors.confirmPassword = "Passwords do not match";
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+
+}
 
     function handleSubmit(e) {
+
     e.preventDefault();
 
-    if (password !== confirmPassword) {
-       setPMSG("please check! Both passwords has to be match")
-        if (!passwordRegex.test(password)){
-        setPMSG("choose a strong password")
-
-        }
-
-    }
-    if(phoneNumber.length !==10){
-        setNum("Please enter a valid number");
+    if (!validateForm()) {
         return;
     }
-  else {
+
     const user = {
         fullName,
         employeeId,
         officialEmail,
         phoneNumber,
-        password
+        password,
     };
 
-    // Save user temporarily
     localStorage.setItem("user", JSON.stringify(user));
 
     alert("🎉 Account created successfully!");
-}  
-    // Clear the form
+
     setFullName("");
     setEmployeeId("");
     setOfficialEmail("");
     setPhoneNumber("");
     setPassword("");
     setConfirmPassword("");
+    setErrors({});
 
-    // Redirect to Login
     navigate("/login");
 }
 
@@ -80,8 +109,21 @@ function Register() {
                                 type="text"
                                 placeholder="Enter your full name"
                                 value={fullName}
-                                onChange={(e) => setFullName(e.target.value)}
+                                onChange={(e) => {
+    setFullName(e.target.value);
+
+    setErrors({
+        ...errors,
+        fullName: ""
+    });
+}}
                             />
+                            {errors.fullName && (
+                                <p className="error-text">
+                                    {errors.fullName}
+                                </p>
+                            )}
+
 
                         </div>
 
@@ -93,8 +135,20 @@ function Register() {
                                 type="text"
                                 placeholder="Enter Employee ID"
                                 value={employeeId}
-                                onChange={(e) => setEmployeeId(e.target.value)}
+                                onChange={(e) => {
+                                    setEmployeeId(e.target.value);
+
+                                        setErrors({
+                                             ...errors,
+                                            employeeId: ""
+                                        });
+                                }   }
                             />
+                            {errors.employeeId && (
+                                <p className="error-text">
+                                    {errors.employeeId}
+                                </p>
+                            )}
 
                         </div>
 
@@ -106,8 +160,20 @@ function Register() {
                                 type="email"
                                 placeholder="Enter official email"
                                 value={officialEmail}
-                                onChange={(e) => setOfficialEmail(e.target.value)}
+                                onChange={(e) => {
+                                    setOfficialEmail(e.target.value);
+
+                                    setErrors({
+                                        ...errors,
+                                        officialEmail: ""
+                                    });
+                                }}
                             />
+                            {errors.officialEmail && (
+                                <p className="error-text">
+                                    {errors.officialEmail}
+                                </p>
+                            )}
 
                         </div>
 
@@ -119,9 +185,20 @@ function Register() {
                                 type="text"
                                 placeholder="Enter phone number"
                                 value={phoneNumber}
-                                onChange={(e) => setPhoneNumber(e.target.value)}
+                                onChange={(e) => {
+                                    setPhoneNumber(e.target.value);
+
+                                    setErrors({
+                                        ...errors,
+                                        phoneNumber: ""
+                                    });
+                                }}
                             />
-                            <p>{Num}</p>
+                            {errors.phoneNumber && (
+                                <p className="error-text">
+                                    {errors.phoneNumber}
+                                </p>
+                            )}
 
                         </div>
 
@@ -135,8 +212,16 @@ function Register() {
                                     type={showPassword ? "text" : "password"}
                                     placeholder="Create password"
                                     value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
+                                    onChange={(e) => {
+                                        setPassword(e.target.value);
+
+                                        setErrors({
+                                            ...errors,
+                                            password: ""
+                                        });
+                                    }}
                                 />
+
 
                                 <span
                                     className="show-btn"
@@ -146,6 +231,11 @@ function Register() {
                                 </span>
 
                             </div>
+                            {errors.password && (
+                                <p className="error-text">
+                                    {errors.password}
+                                </p>
+                            )}
 
                         </div>
 
@@ -157,9 +247,20 @@ function Register() {
                                 type={showPassword ? "text" : "password"}
                                 placeholder="Confirm password"
                                 value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                onChange={(e) => {
+                                    setConfirmPassword(e.target.value);
+
+                                    setErrors({
+                                        ...errors,
+                                        confirmPassword: ""
+                                    });
+                                }}
                             />
-                            <p>{PMSG}</p>
+                            {errors.confirmPassword && (
+                                <p className="error-text">
+                                    {errors.confirmPassword}
+                                </p>
+                            )}
 
                         </div>
 
@@ -189,5 +290,4 @@ function Register() {
     );
 
 }
-
 export default Register;
