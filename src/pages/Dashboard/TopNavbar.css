@@ -405,3 +405,137 @@
     }
 
 }
+.notification-dot {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  min-width: 18px;
+  height: 18px;
+  background: #ef4444;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.notification-dropdown {
+  position: absolute;
+  top: 55px;
+  right: 110px;
+  width: 320px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  padding: 15px;
+  z-index: 1000;
+}
+
+.notification-dropdown h4 {
+  margin-bottom: 12px;
+  font-size: 16px;
+  color: #1f2937;
+}
+
+.notification-item {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+  color: #555;
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+.notification-item:hover {
+  background: #f5f7fb;
+  border-radius: 8px;
+}
+.profile-wrapper {
+  position: relative;
+}
+
+.profile-dropdown {
+  position: absolute;
+  top: 55px;
+  right: 0;
+  width: 180px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  overflow: hidden;
+  z-index: 1000;
+}
+.dropdown-item {
+  width: 100%;
+  padding: 12px 18px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+.dropdown-item:hover {
+  background: #f3f4f6;
+}
+
+.logout {
+  color: #dc2626;
+}
+
+.logout:hover {
+  background: #fee2e2;
+}
+.new-wrapper {
+  position: relative;
+}
+
+.new-dropdown {
+  position: absolute;
+  top: 55px;
+  left: 0;
+  width: 220px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  overflow: hidden;
+  z-index: 1000;
+}
+.new-dropdown button {
+  width: 100%;
+  padding: 12px 18px;
+  border: none;
+  background: white;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+.new-dropdown button:hover {
+  background: #f5f7fb;
+}
+.profile-dropdown .dropdown-item {
+    color: #1f2937;
+}
+.profile-dropdown {
+    background: #ffffff;
+}
+
+.profile-dropdown .dropdown-item {
+    color: #1f2937;
+    background: #ffffff;
+}
+
+.new-dropdown {
+    background: #ffffff;
+}
+
+.new-dropdown button {
+    color: #1f2937;
+    background: #ffffff;
+}
