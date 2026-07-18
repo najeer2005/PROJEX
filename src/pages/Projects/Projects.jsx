@@ -1,4 +1,7 @@
 import "./Projects.css";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 
 import {
   HiMagnifyingGlass,
@@ -9,6 +12,7 @@ import {
   HiClock,
   HiCheckCircle,
 } from "react-icons/hi2";
+
 
 function Projects() {
 
@@ -67,6 +71,15 @@ function Projects() {
     },
 
   ];
+  const [search,setsearch]=useState("");
+  const filteredProjects = projects.filter((project) =>
+  project.name.toLowerCase().includes(search.toLowerCase()) ||
+  project.manager.toLowerCase().includes(search.toLowerCase()) ||
+  project.client.toLowerCase().includes(search.toLowerCase()) ||
+  project.status.toLowerCase().includes(search.toLowerCase()) ||
+  project.priority.toLowerCase().includes(search.toLowerCase())
+);
+const navigate = useNavigate("")
 
   return (
 
@@ -167,7 +180,7 @@ function Projects() {
           <input
             type="text"
             placeholder="Search project..."
-          />
+          onChange={(e)=>setsearch(e.target.value)}/>
 
         </div>
 
@@ -231,7 +244,7 @@ function Projects() {
 
           <tbody>
 
-            {projects.map((project) => (
+            {filteredProjects.map((project) => (
 
               <tr key={project.id}>
 
@@ -278,10 +291,9 @@ function Projects() {
 
                 <td>
 
-                  <button className="action edit">
-
+                  <button className="action edit"
+                    onClick={() => navigate("/edit-project", { state: project })}>
                     <HiPencilSquare />
-
                   </button>
 
                   <button className="action delete">

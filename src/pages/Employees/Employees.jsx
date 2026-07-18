@@ -1,4 +1,6 @@
 import "./Employees.css";
+import { useState } from "react";
+
 
 import {
   HiMagnifyingGlass,
@@ -16,7 +18,8 @@ function Employees() {
   /* =========================
       EMPLOYEE STATISTICS
   ========================= */
-
+  const [search,setsearch] =useState("");
+  const [department, setDepartment] = useState("All Departments");
   const employeeStats = {
 
     total: 18,
@@ -86,6 +89,13 @@ function Employees() {
     },
 
   ];
+    const filteredEmployees = employees.filter((employee) =>
+  employee.name.toLowerCase().includes(search.toLowerCase()) ||
+  employee.employeeId.toLowerCase().includes(search.toLowerCase()) ||
+  employee.department.toLowerCase().includes(search.toLowerCase()) ||
+  employee.role.toLowerCase().includes(search.toLowerCase()) ||
+  employee.status.toLowerCase().includes(search.toLowerCase())
+);
     return (
 
     <div className="page-content">
@@ -191,7 +201,8 @@ function Employees() {
           <input
             type="text"
             placeholder="Search employee..."
-          />
+          
+          onChange={(e)=>setsearch(e.target.value)}/>
 
         </div>
 
@@ -260,7 +271,7 @@ function Employees() {
           </thead>
 
           <tbody>
-                        {employees.map((employee) => (
+                        {filteredEmployees.map((employee) => (
 
               <tr key={employee.id}>
 
