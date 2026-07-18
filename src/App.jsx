@@ -15,6 +15,7 @@ import Teams from "./pages/Teams/Teams";
 import BugTracker from "./pages/Bug Tracker/BugTracker";
 import Reports from "./pages/Reports/Reports";
 import Calendar from "./pages/Calendar/Calendar";
+import EditProject from "./pages/Projects/projectsEditer";
 
 /* =========================
    Dashboard Layout
@@ -52,6 +53,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
 
           <Route path="/projects" element={<Projects />} />
+          <Route path="/edit-project" element={<EditProject />} />
 
           {/* Future Pages */}
 
