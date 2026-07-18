@@ -1,4 +1,5 @@
 import "./Tasks.css";
+import { useState } from "react";
 
 import {
   HiMagnifyingGlass,
@@ -76,6 +77,15 @@ function Tasks() {
     },
 
   ];
+const [search,setsearch]=useState("");
+const filteredTasks = tasks.filter((task) =>
+  task.name.toLowerCase().includes(search.toLowerCase()) ||
+  task.project.toLowerCase().includes(search.toLowerCase()) ||
+  task.assignedTo.toLowerCase().includes(search.toLowerCase()) ||
+  task.priority.toLowerCase().includes(search.toLowerCase()) ||
+  task.status.toLowerCase().includes(search.toLowerCase()) ||
+  task.dueDate.toLowerCase().includes(search.toLowerCase())
+);
     return (
 
     <div className="page-content">
@@ -181,33 +191,33 @@ function Tasks() {
           <input
             type="text"
             placeholder="Search task..."
-          />
+          onChange={(e)=>setsearch(e.target.value)}/>
 
         </div>
 
         <div className="filters">
 
-          <select>
+          <select onChange={(e)=>setsearch(e.target.value)}>
 
-            <option>All Status</option>
+            <option value= "">All Status</option>
 
-            <option>Pending</option>
+            <option value ="Pending">Pending</option>
 
-            <option>In Progress</option>
+            <option value ="In progress">In Progress</option>
 
-            <option>Completed</option>
+            <option value ="Completed">Completed</option>
 
           </select>
 
-          <select>
+          <select onChange={(e)=>setsearch(e.target.value)}>
 
-            <option>Priority</option>
+            <option value = "">Priority</option>
 
-            <option>High</option>
+            <option value ="High">High</option>
 
-            <option>Medium</option>
+            <option value = "Medium">Medium</option>
 
-            <option>Low</option>
+            <option value="Low">Low</option>
 
           </select>
 
@@ -246,7 +256,7 @@ function Tasks() {
           </thead>
 
           <tbody>
-                        {tasks.map((task) => (
+                        {filteredTasks.map((task) => (
 
               <tr key={task.id}>
 

@@ -186,29 +186,20 @@ const navigate = useNavigate("")
 
         <div className="filters">
 
-          <select>
+         <select onChange={(e) => setsearch(e.target.value)}>
+         <option value="">All Status</option>
+         <option value="Planning">Planning</option>
+         <option value="Active">Active</option>
+         <option value="Completed">Completed</option>
+         </select>
 
-            <option>All Status</option>
-
-            <option>Planning</option>
-
-            <option>Active</option>
-
-            <option>Completed</option>
-
-          </select>
-
-          <select>
-
-            <option>Priority</option>
-
-            <option>High</option>
-
-            <option>Medium</option>
-
-            <option>Low</option>
-
-          </select>
+          
+        <select onChange={(e) => setsearch(e.target.value)}>
+        <option value="">Priority</option>
+        <option value="High">High</option>
+        <option value="Medium">Medium</option>
+       <option value="Low">Low</option>
+       </select>
 
         </div>
 
