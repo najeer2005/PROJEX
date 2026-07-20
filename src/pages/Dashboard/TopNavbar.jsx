@@ -29,11 +29,31 @@ const [notifications] = useState([
     { id: 3, message: "New comment on your task." },
   ]);
 
-  function handleSearch(e) {
-
-  const value = e.target.value;
-
-  setSearch(value);
+  function handleSearch() {
+  if (search.trim().toLowerCase() === "projects"){
+    navigate("/projects");
+  }
+  else if (search.trim().toLowerCase() === "tasks"){
+    navigate("/tasks");
+  }
+  else if (search.trim().toLowerCase()==="employees" ){
+    navigate("/employees")
+  }
+  else if (search.trim().toLowerCase() === "teams"){
+    navigate("/teams");
+  }
+  else if(search.trim().toLowerCase() === "bugs" || search.trim().toLowerCase() ==="bugreport" ){
+    navigate("/bugs");
+  }
+  else if (search.trim().toLowerCase() ==="reports"){
+    navigate("/reports")
+  }
+  else if (search.trim().toLowerCase() ==="calender"){
+    navigate("/calender");
+  }
+  else{
+    navigate("/dashboard");
+  }
 
   console.log("Searching:", value);
 
@@ -66,14 +86,13 @@ const [notifications] = useState([
 
         <div className="search-box">
 
-          <HiMagnifyingGlass className="search-icon" />
-
           <input
             type="text"
             placeholder="Search projects, tasks, employees..."
             value={search}
-            onChange={handleSearch}
+            onChange={(e)=>setSearch(e.target.value)}
           />
+          <button onClick={handleSearch}><HiMagnifyingGlass className="search-icon"/></button>
 
         </div>
 
@@ -191,7 +210,7 @@ const [notifications] = useState([
           <div className="profile-dropdown">
             <button className="dropdown-item">Profile</button>
             <button className="dropdown-item">Settings</button>
-            <button className="dropdown-item">Logout</button>
+            <button className="dropdown-item" onClick={(e)=>{navigate("/login")}}>Logout</button>
           </div>
         )}
       </div>

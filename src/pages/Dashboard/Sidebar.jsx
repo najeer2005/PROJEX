@@ -117,7 +117,7 @@ function Sidebar() {
                 <h4>SETTINGS</h4>
 
                 <NavLink
-                    to="/settings"
+                    to="/dashboard"
                     className="sidebar-link"
                 >
                     <HiCog6Tooth />

@@ -1,4 +1,5 @@
 import "./Tasks.css";
+import { useState } from "react";
 
 import {
   HiMagnifyingGlass,
@@ -76,6 +77,15 @@ function Tasks() {
     },
 
   ];
+  const [search, setSearch] = useState("");
+  const filteredTasks = tasks.filter(({ name, project, assignedTo, priority, status, dueDate }) =>
+  name.toLowerCase().includes(search.trim().toLowerCase()) ||
+  project.toLowerCase().includes(search.trim().toLowerCase()) ||
+  assignedTo.toLowerCase().includes(search.trim().toLowerCase()) ||
+  priority.toLowerCase().includes(search.trim().toLowerCase()) ||
+  status.toLowerCase().includes(search.trim().toLowerCase()) ||
+  dueDate.includes(search.trim())
+);
     return (
 
     <div className="page-content">
@@ -181,33 +191,34 @@ function Tasks() {
           <input
             type="text"
             placeholder="Search task..."
-          />
+          value={search}
+          onChange={(e) => setSearch(e.target.value)} />
 
         </div>
 
         <div className="filters">
 
-          <select>
+          <select value={search} onChange={(e) => setSearch(e.target.value)}>
 
-            <option>All Status</option>
+            <option value="">All Status</option>
 
-            <option>Pending</option>
+            <option value="Pending">Pending</option>
 
-            <option>In Progress</option>
+            <option value="In Progress">In Progress</option>
 
-            <option>Completed</option>
+            <option value="Completed">Completed</option>
 
           </select>
 
-          <select>
+          <select value={search} onChange={(e) => setSearch(e.target.value)}>
 
-            <option>Priority</option>
+            <option value="">Priority</option>
 
-            <option>High</option>
+            <option value="High">High</option>
 
-            <option>Medium</option>
+            <option value="Medium">Medium</option>
 
-            <option>Low</option>
+            <option value="Low">Low</option>
 
           </select>
 
@@ -246,7 +257,7 @@ function Tasks() {
           </thead>
 
           <tbody>
-                        {tasks.map((task) => (
+                        {filteredTasks.map((task) => (
 
               <tr key={task.id}>
 

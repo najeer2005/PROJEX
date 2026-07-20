@@ -1,4 +1,5 @@
 import "./Employees.css";
+import { useState } from "react";
 
 import {
   HiMagnifyingGlass,
@@ -86,6 +87,15 @@ function Employees() {
     },
 
   ];
+  const [search, setSearch] = useState("");
+
+const filteredEmployees = employees.filter(({ name, department,role,status,employeeId}) =>
+  name.toLowerCase().includes(search.trim().toLowerCase()) ||
+  department.toLowerCase().includes(search.trim().toLowerCase()) ||
+  role.toLowerCase().includes(search.trim().toLowerCase()) ||
+  status.toLowerCase().includes(search.trim().toLowerCase()) ||
+  employeeId.toLowerCase().includes(search.trim().toLowerCase())
+);
     return (
 
     <div className="page-content">
@@ -191,37 +201,39 @@ function Employees() {
           <input
             type="text"
             placeholder="Search employee..."
+          value ={search}
+          onChange={(e) => setSearch(e.target.value)}
           />
 
         </div>
 
         <div className="filters">
 
-          <select>
+          <select value ={search} onChange={(e) => setSearch(e.target.value)}>
 
-            <option>All Departments</option>
+            <option value ="">All Departments</option>
 
-            <option>Frontend</option>
+            <option value = "frontend">Frontend</option>
 
             <option>Backend</option>
 
-            <option>UI/UX</option>
+            <option value="ui/ux">UI/UX</option>
 
-            <option>QA</option>
+            <option value ="QA">QA</option>
 
-            <option>DevOps</option>
+            <option value="devops">DevOps</option>
 
           </select>
 
-          <select>
+          <select value ={search} onChange={(e) => setSearch(e.target.value)}>
 
-            <option>All Status</option>
+            <option value ="">All Status</option>
 
-            <option>Active</option>
+            <option value="Active">Active</option>
 
             <option>Available</option>
 
-            <option>On Leave</option>
+            <option value ="onLeave">On Leave</option>
 
           </select>
 
@@ -260,7 +272,7 @@ function Employees() {
           </thead>
 
           <tbody>
-                        {employees.map((employee) => (
+                        {filteredEmployees.map((employee) => (
 
               <tr key={employee.id}>
 

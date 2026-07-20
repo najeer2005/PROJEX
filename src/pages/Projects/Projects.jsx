@@ -1,4 +1,5 @@
 import "./Projects.css";
+import { useState } from "react";
 
 import {
   HiMagnifyingGlass,
@@ -67,6 +68,16 @@ function Projects() {
     },
 
   ];
+  const [search,setSearch] = useState("");
+  const filteredProjects = projects.filter(({ name, manager,client,status,priority,progress}) =>
+  name.toLowerCase().includes(search.trim().toLowerCase()) ||
+  manager.toLowerCase().includes(search.trim().toLowerCase()) ||
+  client.toLowerCase().includes(search.trim().toLowerCase()) ||
+  status.toLowerCase().includes(search.trim().toLowerCase()) ||
+  priority.toLowerCase().includes(search.trim().toLowerCase()) ||
+  progress.toString().includes(search.trim())
+);
+
 
   return (
 
@@ -167,33 +178,33 @@ function Projects() {
           <input
             type="text"
             placeholder="Search project..."
-          />
+          onChange={(e)=>setSearch(e.target.value)}/>
 
         </div>
 
         <div className="filters">
 
-          <select>
+          <select value={search} onChange={(e) => setSearch(e.target.value)}>
 
-            <option>All Status</option>
+            <option value="">All Status</option>
 
-            <option>Planning</option>
+            <option value="Planning">Planning</option>
 
-            <option>Active</option>
+            <option value="Active">Active</option>
 
-            <option>Completed</option>
+            <option value="Completed">Completed</option>
 
           </select>
 
-          <select>
+          <select value={search} onChange={(e) => setSearch(e.target.value)}>
 
-            <option>Priority</option>
+            <option value="">Priority</option>
 
-            <option>High</option>
+            <option value="High">High</option>
 
-            <option>Medium</option>
+            <option value="Medium">Medium</option>
 
-            <option>Low</option>
+            <option value="Low">Low</option>
 
           </select>
 
@@ -231,7 +242,7 @@ function Projects() {
 
           <tbody>
 
-            {projects.map((project) => (
+            {filteredProjects.map((project) => (
 
               <tr key={project.id}>
 

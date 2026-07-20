@@ -1,4 +1,5 @@
 import "./Teams.css";
+import { useState } from "react";
 
 import {
   HiMagnifyingGlass,
@@ -86,6 +87,13 @@ function Teams() {
     }
 
   ];
+  const [search,setSearch] = useState("");
+  const filteredTeams = teams.filter(({ name, lead, department, status }) =>
+  name.toLowerCase().includes(search.trim().toLowerCase()) ||
+  lead.toLowerCase().includes(search.trim().toLowerCase()) ||
+  department.toLowerCase().includes(search.trim().toLowerCase()) ||
+  status.toLowerCase().includes(search.trim().toLowerCase()) 
+);
     return (
 
     <div className="page-content">
@@ -191,35 +199,36 @@ function Teams() {
           <input
             type="text"
             placeholder="Search team..."
-          />
+          value={search}
+          onChange={(e) => setSearch(e.target.value)} />
 
         </div>
 
         <div className="filters">
 
-          <select>
+          <select value={search} onChange={(e) => setSearch(e.target.value)}>
 
-            <option>All Departments</option>
+            <option value="">All Departments</option>
 
-            <option>Engineering</option>
+            <option value="Engineering">Engineering</option>
 
-            <option>Design</option>
+            <option value="Design">Design</option>
 
-            <option>Quality Assurance</option>
+            <option value="Quality Assurance">Quality Assurance</option>
 
-            <option>Infrastructure</option>
+            <option value="Infrastructure">Infrastructure</option>
 
           </select>
 
-          <select>
+          <select value={search} onChange={(e) => setSearch(e.target.value)}>
 
-            <option>All Status</option>
+            <option value="">All Status</option>
 
-            <option>Active</option>
+            <option value="Active">Active</option>
 
-            <option>Planning</option>
+            <option value="Planning">Planning</option>
 
-            <option>Maintenance</option>
+            <option value="Maintenance">Maintenance</option>
 
           </select>
 
@@ -258,7 +267,7 @@ function Teams() {
           </thead>
 
           <tbody>
-                        {teams.map((team) => (
+                        {filteredTeams.map((team) => (
 
               <tr key={team.id}>
 

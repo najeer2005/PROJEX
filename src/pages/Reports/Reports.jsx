@@ -1,4 +1,5 @@
 import "./Reports.css";
+import { useState } from "react";
 
 import {
   HiMagnifyingGlass,
@@ -82,6 +83,13 @@ function Reports() {
     },
 
   ];
+  const [search,setSearch] = useState("");
+  const filteredReports = reports.filter(({ name, category, generatedBy, status }) =>
+  name.toLowerCase().includes(search.trim().toLowerCase()) ||
+  category.toLowerCase().includes(search.trim().toLowerCase()) ||
+  generatedBy.toLowerCase().includes(search.trim().toLowerCase()) ||
+  status.toLowerCase().includes(search.trim().toLowerCase())
+);
     return (
 
     <div className="page-content">
@@ -187,33 +195,34 @@ function Reports() {
           <input
             type="text"
             placeholder="Search report..."
-          />
+          value={search}
+          onChange={(e) => setSearch(e.target.value)} />
 
         </div>
 
         <div className="filters">
 
-          <select>
+          <select value={search} onChange={(e) => setSearch(e.target.value)}>
 
-            <option>All Categories</option>
+            <option value="">All Categories</option>
 
-            <option>Project</option>
+            <option value="Project">Project</option>
 
-            <option>Task</option>
+            <option value="Task">Task</option>
 
-            <option>Bug</option>
+            <option value="Bug">Bug</option>
 
-            <option>Employee</option>
+            <option value="Employee">Employee</option>
 
           </select>
 
-          <select>
+          <select value={search} onChange={(e) => setSearch(e.target.value)}>
 
-            <option>All Status</option>
+            <option value="">All Status</option>
 
-            <option>Generated</option>
+            <option value="Generated">Generated</option>
 
-            <option>Pending</option>
+            <option value="Pending">Pending</option>
 
           </select>
 
@@ -250,7 +259,7 @@ function Reports() {
           </thead>
 
           <tbody>
-                        {reports.map((report) => (
+                        {filteredReports.map((report) => (
 
               <tr key={report.id}>
 

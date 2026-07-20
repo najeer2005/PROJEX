@@ -1,4 +1,5 @@
 import "./BugTracker.css";
+import { useState } from "react";
 
 import {
   HiMagnifyingGlass,
@@ -76,6 +77,15 @@ function BugTracker() {
     },
 
   ];
+  const [search,setSearch] = useState("");
+  const filteredBugs = bugs.filter(({ title, project, assignedTo, priority, status, reportedBy }) =>
+  title.toLowerCase().includes(search.trim().toLowerCase()) ||
+  project.toLowerCase().includes(search.trim().toLowerCase()) ||
+  assignedTo.toLowerCase().includes(search.trim().toLowerCase()) ||
+  priority.toLowerCase().includes(search.trim().toLowerCase()) ||
+  status.toLowerCase().includes(search.trim().toLowerCase()) ||
+  reportedBy.toLowerCase().includes(search.trim().toLowerCase())
+);
     return (
 
     <div className="page-content">
@@ -181,33 +191,34 @@ function BugTracker() {
           <input
             type="text"
             placeholder="Search bug..."
-          />
+          value={search}
+          onChange={(e) => setSearch(e.target.value)} />
 
         </div>
 
         <div className="filters">
 
-          <select>
+          <select value={search} onChange={(e) => setSearch(e.target.value)}>
 
-            <option>All Status</option>
+            <option value="">All Status</option>
 
-            <option>Open</option>
+            <option value="Open">Open</option>
 
-            <option>In Progress</option>
+            <option value="In Progress">In Progress</option>
 
-            <option>Resolved</option>
+            <option value="Resolved">Resolved</option>
 
           </select>
 
-          <select>
+          <select value={search} onChange={(e) => setSearch(e.target.value)}>
 
-            <option>Priority</option>
+            <option value="">Priority</option>
 
-            <option>High</option>
+            <option value="High">High</option>
 
-            <option>Medium</option>
+            <option value="Medium">Medium</option>
 
-            <option>Low</option>
+            <option value="Low">Low</option>
 
           </select>
 
@@ -246,7 +257,7 @@ function BugTracker() {
           </thead>
 
           <tbody>
-                        {bugs.map((bug) => (
+                        {filteredBugs.map((bug) => (
 
               <tr key={bug.id}>
 
