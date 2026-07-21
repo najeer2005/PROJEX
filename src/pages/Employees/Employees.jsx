@@ -34,10 +34,10 @@ function Employees() {
   const [employees, setEmployees] = useState([]);
   async function fetchEmployees() {
     try {
-      const response = await fetch("http://localhost:5000/api/employees");
+      const response = await fetch("http://localhost:5000/employees");
       const data = await response.json();
-      setEmployees(data.employees || []);
-      console.log(data.employees);
+      setEmployees(data);
+      console.log(data);
     } catch (error) {
       console.error("Error fetching employees:", error);
     }
@@ -51,13 +51,17 @@ function Employees() {
   ========================= */
 
 const [search, setSearch] = useState("");
-const filteredEmployees = employees.filter(({ name, department,role,status,employeeId}) =>
-  name.toLowerCase().includes(search.trim().toLowerCase()) ||
-  department.toLowerCase().includes(search.trim().toLowerCase()) ||
-  role.toLowerCase().includes(search.trim().toLowerCase()) ||
-  status.toLowerCase().includes(search.trim().toLowerCase()) ||
-  employeeId.toLowerCase().includes(search.trim().toLowerCase())
+const filteredEmployees = employees.filter((employee) =>
+  (employee.Employee || "").toLowerCase().includes(search.toLowerCase()) ||
+  (employee.EmployeeID || "").toLowerCase().includes(search.toLowerCase()) ||
+  (employee.Department || "").toLowerCase().includes(search.toLowerCase()) ||
+  (employee.Role || "").toLowerCase().includes(search.toLowerCase()) ||
+  (employee.Status || "").toLowerCase().includes(search.toLowerCase())
 );
+
+console.log("Employees State:", employees);
+console.log("Filtered Employees:", filteredEmployees);
+
     return (
 
     <div className="page-content">
@@ -244,13 +248,13 @@ const filteredEmployees = employees.filter(({ name, department,role,status,emplo
 
                     <div className="employee-avatar">
 
-                      {employee.name.charAt(0)}
+                      {employee.Employee ? employee.Employee.charAt(0) : "?"}
 
                     </div>
 
                     <div>
 
-                      <strong>{employee.name}</strong>
+                      <strong>{employee.Employee}</strong>
 
                     </div>
 
@@ -258,21 +262,21 @@ const filteredEmployees = employees.filter(({ name, department,role,status,emplo
 
                 </td>
 
-                <td>{employee.employeeId}</td>
+                <td>{employee.EmployeeID}</td>
 
-                <td>{employee.department}</td>
+                <td>{employee.Department}</td>
 
-                <td>{employee.role}</td>
+                <td>{employee.Role}</td>
 
                 <td>
 
                   <span
-                    className={`status ${employee.status
+                    className={`status ${employee.Status
                       .toLowerCase()
                       .replace(/\s/g, "-")}`}
                   >
 
-                    {employee.status}
+                    {employee.Status}
 
                   </span>
 
@@ -282,7 +286,7 @@ const filteredEmployees = employees.filter(({ name, department,role,status,emplo
 
                   <span className="project-count">
 
-                    {employee.projects}
+                    {employee.Projects}
 
                   </span>
 
