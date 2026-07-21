@@ -1,5 +1,6 @@
 import "./Projects.css";
 import { useState } from "react";
+import { useEffect } from "react";
 
 import {
   HiMagnifyingGlass,
@@ -25,59 +26,33 @@ function Projects() {
 
   };
 
-  const projects = [
-
-    {
-      id: 1,
-      name: "CRM Portal",
-      manager: "Rahul",
-      client: "ABC Pvt Ltd",
-      status: "Active",
-      priority: "High",
-      progress: 82,
-    },
-
-    {
-      id: 2,
-      name: "Inventory System",
-      manager: "Priya",
-      client: "XYZ Industries",
-      status: "Planning",
-      priority: "Medium",
-      progress: 35,
-    },
-
-    {
-      id: 3,
-      name: "HRMS",
-      manager: "John",
-      client: "Global Tech",
-      status: "Completed",
-      priority: "Low",
-      progress: 100,
-    },
-
-    {
-      id: 4,
-      name: "Delivery App",
-      manager: "David",
-      client: "Fast Express",
-      status: "Active",
-      priority: "High",
-      progress: 67,
-    },
-
-  ];
+  const [projects,SetProjects] = useState([]);
+  async function fetchProjects() {
+    try {
+      const response = await fetch("http://localhost:5000/projects");
+      const data = await response.json();
+      SetProjects(data.projects || []);
+    } catch (error) {
+      console.error("Error fetching projects:", error);
+    }
+  }
+  useEffect(() => {
+    fetchProjects();
+  }, []);
+console.log(projects);
   const [search,setSearch] = useState("");
-  const filteredProjects = projects.filter(({ name, manager,client,status,priority,progress}) =>
-  name.toLowerCase().includes(search.trim().toLowerCase()) ||
-  manager.toLowerCase().includes(search.trim().toLowerCase()) ||
-  client.toLowerCase().includes(search.trim().toLowerCase()) ||
-  status.toLowerCase().includes(search.trim().toLowerCase()) ||
-  priority.toLowerCase().includes(search.trim().toLowerCase()) ||
-  progress.toString().includes(search.trim())
+  const filteredProjects = projects.filter(
+  ({ name, manager, client, status, priority, progress }) => {
+    return (
+      name.toLowerCase().includes(search.trim().toLowerCase()) ||
+      manager.toLowerCase().includes(search.trim().toLowerCase()) ||
+      client.toLowerCase().includes(search.trim().toLowerCase()) ||
+      status.toLowerCase().includes(search.trim().toLowerCase()) ||
+      priority.toLowerCase().includes(search.trim().toLowerCase()) ||
+      progress.toString().includes(search.trim())
+    );
+  }
 );
-
 
   return (
 
@@ -244,7 +219,7 @@ function Projects() {
 
             {filteredProjects.map((project) => (
 
-              <tr key={project.id}>
+              <tr key={project._id}>
 
                 <td>{project.name}</td>
 

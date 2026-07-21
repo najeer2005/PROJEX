@@ -1,5 +1,6 @@
 import "./Employees.css";
 import { useState } from "react";
+import { useEffect } from "react";
 
 import {
   HiMagnifyingGlass,
@@ -11,6 +12,7 @@ import {
   HiPencilSquare,
   HiTrash,
 } from "react-icons/hi2";
+
 
 function Employees() {
 
@@ -29,66 +31,26 @@ function Employees() {
     available: 13,
 
   };
+  const [employees, setEmployees] = useState([]);
+  async function fetchEmployees() {
+    try {
+      const response = await fetch("http://localhost:5000/api/employees");
+      const data = await response.json();
+      setEmployees(data.employees || []);
+      console.log(data.employees);
+    } catch (error) {
+      console.error("Error fetching employees:", error);
+    }
+  } ;
+  useEffect(() => {
+    fetchEmployees();
+  }, []);
 
   /* =========================
       EMPLOYEE DATA
   ========================= */
 
-  const employees = [
-
-    {
-      id: 1,
-      name: "Rahul Sharma",
-      employeeId: "EMP001",
-      department: "Frontend",
-      role: "React Developer",
-      status: "Active",
-      projects: 3,
-    },
-
-    {
-      id: 2,
-      name: "Priya Reddy",
-      employeeId: "EMP002",
-      department: "Backend",
-      role: "Node.js Developer",
-      status: "Active",
-      projects: 2,
-    },
-
-    {
-      id: 3,
-      name: "David Kumar",
-      employeeId: "EMP003",
-      department: "UI/UX",
-      role: "UI Designer",
-      status: "On Leave",
-      projects: 1,
-    },
-
-    {
-      id: 4,
-      name: "John Peter",
-      employeeId: "EMP004",
-      department: "QA",
-      role: "QA Engineer",
-      status: "Active",
-      projects: 2,
-    },
-
-    {
-      id: 5,
-      name: "Sneha Patel",
-      employeeId: "EMP005",
-      department: "DevOps",
-      role: "DevOps Engineer",
-      status: "Available",
-      projects: 0,
-    },
-
-  ];
-  const [search, setSearch] = useState("");
-
+const [search, setSearch] = useState("");
 const filteredEmployees = employees.filter(({ name, department,role,status,employeeId}) =>
   name.toLowerCase().includes(search.trim().toLowerCase()) ||
   department.toLowerCase().includes(search.trim().toLowerCase()) ||
@@ -274,7 +236,7 @@ const filteredEmployees = employees.filter(({ name, department,role,status,emplo
           <tbody>
                         {filteredEmployees.map((employee) => (
 
-              <tr key={employee.id}>
+              <tr key={employee._id}>
 
                 <td>
 

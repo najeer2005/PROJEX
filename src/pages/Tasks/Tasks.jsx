@@ -1,5 +1,6 @@
 import "./Tasks.css";
 import { useState } from "react";
+import { useEffect } from "react";
 
 import {
   HiMagnifyingGlass,
@@ -33,59 +34,33 @@ function Tasks() {
   /* =========================
       TASK DATA
   ========================= */
+  const [tasks, setTasks] = useState([]);
+  const [projects,SetProjects] = useState([]);
+  async function fetchTasks() {
+    try {
+      const response = await fetch("http://localhost:5000/tasks");
+      const data = await response.json();
+      setTasks(data);
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+    }
+  }
+  useEffect(() => {
+    fetchTasks();
+  }, []);
 
-  const tasks = [
-
-    {
-      id: 1,
-      name: "Login API",
-      project: "CRM Portal",
-      assignedTo: "Rahul",
-      priority: "High",
-      status: "In Progress",
-      dueDate: "18 Jul 2026",
-    },
-
-    {
-      id: 2,
-      name: "Dashboard UI",
-      project: "HRMS",
-      assignedTo: "David",
-      priority: "Medium",
-      status: "Completed",
-      dueDate: "20 Jul 2026",
-    },
-
-    {
-      id: 3,
-      name: "Payment Gateway",
-      project: "Inventory System",
-      assignedTo: "Priya",
-      priority: "High",
-      status: "Pending",
-      dueDate: "22 Jul 2026",
-    },
-
-    {
-      id: 4,
-      name: "Employee Module",
-      project: "HRMS",
-      assignedTo: "John",
-      priority: "Low",
-      status: "Pending",
-      dueDate: "25 Jul 2026",
-    },
-
-  ];
   const [search, setSearch] = useState("");
-  const filteredTasks = tasks.filter(({ name, project, assignedTo, priority, status, dueDate }) =>
-  name.toLowerCase().includes(search.trim().toLowerCase()) ||
-  project.toLowerCase().includes(search.trim().toLowerCase()) ||
-  assignedTo.toLowerCase().includes(search.trim().toLowerCase()) ||
-  priority.toLowerCase().includes(search.trim().toLowerCase()) ||
-  status.toLowerCase().includes(search.trim().toLowerCase()) ||
-  dueDate.includes(search.trim())
-);
+  const filteredTasks = tasks.filter(({ name, project, assignedTo, priority, status, dueDate }) => {
+    return (
+      name.toLowerCase().includes(search.trim().toLowerCase()) ||
+      project.toLowerCase().includes(search.trim().toLowerCase()) ||
+      assignedTo.toLowerCase().includes(search.trim().toLowerCase()) ||
+      priority.toLowerCase().includes(search.trim().toLowerCase()) ||
+      status.toLowerCase().includes(search.trim().toLowerCase()) ||
+      dueDate.includes(search.trim())
+    );
+  });
+  console.log(filteredTasks);
     return (
 
     <div className="page-content">
@@ -259,7 +234,7 @@ function Tasks() {
           <tbody>
                         {filteredTasks.map((task) => (
 
-              <tr key={task.id}>
+              <tr key={task._id}>
 
                 <td>{task.name}</td>
 

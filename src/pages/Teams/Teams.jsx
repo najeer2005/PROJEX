@@ -1,5 +1,7 @@
 import "./Teams.css";
+import { use } from "react";
 import { useState } from "react";
+import { useEffect } from "react";
 
 import {
   HiMagnifyingGlass,
@@ -33,66 +35,27 @@ function Teams() {
   /* =========================
       TEAM DATA
   ========================= */
+  async function fetchTeams() {
 
-  const teams = [
-
-    {
-      id:1,
-      name:"Frontend Team",
-      lead:"Rahul Sharma",
-      department:"Engineering",
-      members:5,
-      projects:3,
-      status:"Active"
-    },
-
-    {
-      id:2,
-      name:"Backend Team",
-      lead:"Priya Reddy",
-      department:"Engineering",
-      members:4,
-      projects:4,
-      status:"Active"
-    },
-
-    {
-      id:3,
-      name:"QA Team",
-      lead:"John Peter",
-      department:"Quality Assurance",
-      members:3,
-      projects:2,
-      status:"Active"
-    },
-
-    {
-      id:4,
-      name:"UI / UX Team",
-      lead:"David Kumar",
-      department:"Design",
-      members:3,
-      projects:2,
-      status:"Planning"
-    },
-
-    {
-      id:5,
-      name:"DevOps Team",
-      lead:"Sneha Patel",
-      department:"Infrastructure",
-      members:3,
-      projects:1,
-      status:"Maintenance"
+    try {
+      const response = await fetch("http://localhost:5000/teams");
+      const data = await response.json();
+      setTeams(data);
+    } catch (error) {
+      console.error("Error fetching teams:", error);
     }
+  }
+  useEffect(() => {
+    fetchTeams();
+  }, []);
 
-  ];
-  const [search,setSearch] = useState("");
-  const filteredTeams = teams.filter(({ name, lead, department, status }) =>
-  name.toLowerCase().includes(search.trim().toLowerCase()) ||
-  lead.toLowerCase().includes(search.trim().toLowerCase()) ||
-  department.toLowerCase().includes(search.trim().toLowerCase()) ||
-  status.toLowerCase().includes(search.trim().toLowerCase()) 
+  const [teams, setTeams] = useState([]);
+  const [search, setSearch] = useState("");
+  const filteredTeams = teams.filter(({Team, TeamLead, Department, Members, Projects, Status}) =>
+  Team.toLowerCase().includes(search.trim().toLowerCase()) ||
+  TeamLead.toLowerCase().includes(search.trim().toLowerCase()) ||
+  Department.toLowerCase().includes(search.trim().toLowerCase()) ||
+  Status.toLowerCase().includes(search.trim().toLowerCase()) 
 );
     return (
 
@@ -277,13 +240,13 @@ function Teams() {
 
                     <div className="team-avatar">
 
-                      {team.name.charAt(0)}
+                      {team.Team.charAt(0)}
 
                     </div>
 
                     <div>
 
-                      <strong>{team.name}</strong>
+                      <strong>{team.Team}</strong>
 
                     </div>
 
@@ -291,15 +254,15 @@ function Teams() {
 
                 </td>
 
-                <td>{team.lead}</td>
+                <td>{team.TeamLead}</td>
 
-                <td>{team.department}</td>
+                <td>{team.Department}</td>
 
                 <td>
 
                   <span className="member-count">
 
-                    {team.members}
+                    {team.Members}
 
                   </span>
 
@@ -309,7 +272,7 @@ function Teams() {
 
                   <span className="project-count">
 
-                    {team.projects}
+                    {team.Projects}
 
                   </span>
 
@@ -318,12 +281,12 @@ function Teams() {
                 <td>
 
                   <span
-                    className={`status ${team.status
+                    className={`status ${team.Status
                       .toLowerCase()
                       .replace(/\s/g, "-")}`}
                   >
 
-                    {team.status}
+                    {team.Status}
 
                   </span>
 
