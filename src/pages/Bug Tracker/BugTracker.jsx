@@ -1,5 +1,5 @@
 import "./BugTracker.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import {
   HiMagnifyingGlass,
@@ -16,75 +16,46 @@ function BugTracker() {
 
   /* =========================
       BUG STATISTICS
-  ========================= */
-
-  const bugStats = {
-
-    total: 28,
-
-    open: 8,
-
-    inProgress: 12,
-
-    resolved: 8,
-
-  };
+  =======================
 
   /* =========================
       BUG DATA
   ========================= */
 
-  const bugs = [
 
-    {
-      id: 1,
-      title: "Login API Failure",
-      project: "CRM Portal",
-      assignedTo: "Rahul",
-      priority: "High",
-      status: "Open",
-      reportedBy: "John",
-    },
 
-    {
-      id: 2,
-      title: "Dashboard Layout Issue",
-      project: "HRMS",
-      assignedTo: "David",
-      priority: "Medium",
-      status: "In Progress",
-      reportedBy: "Priya",
-    },
+const [bugs, setBugs] = useState([]);
+const bugStats = {
+  total: bugs.length,
+  open: bugs.filter((bug) => bug.Status === "Open").length,
+  inProgress: bugs.filter((bug) => bug.Status === "In Progress").length,
+  resolved: bugs.filter((bug) => bug.Status === "Resolved").length,
+};
 
-    {
-      id: 3,
-      title: "Payment Timeout",
-      project: "Inventory System",
-      assignedTo: "John",
-      priority: "High",
-      status: "Resolved",
-      reportedBy: "Sneha",
-    },
+useEffect(() => {
+  fetchBugs();
+}, []);
 
-    {
-      id: 4,
-      title: "Sidebar Not Responsive",
-      project: "Delivery App",
-      assignedTo: "Priya",
-      priority: "Low",
-      status: "Open",
-      reportedBy: "Rahul",
-    },
+async function fetchBugs() {
+  try {
+    const response = await fetch("http://localhost:5000/bugreports");
+    const data = await response.json();
 
-  ];
+    console.log(data);
+
+    setBugs(data.bugReports);
+  } catch (error) {
+    console.error(error);
+  }
+}
   const [search,setSearch] = useState("");
-  const filteredBugs = bugs.filter(({ title, project, assignedTo, priority, status, reportedBy }) =>
-  title.toLowerCase().includes(search.trim().toLowerCase()) ||
-  project.toLowerCase().includes(search.trim().toLowerCase()) ||
-  assignedTo.toLowerCase().includes(search.trim().toLowerCase()) ||
-  priority.toLowerCase().includes(search.trim().toLowerCase()) ||
-  status.toLowerCase().includes(search.trim().toLowerCase()) ||
-  reportedBy.toLowerCase().includes(search.trim().toLowerCase())
+  const filteredBugs = bugs.filter(({ Bug, Project, AssignedTo, Priority, Status, ReportedBy }) =>
+  Bug.toLowerCase().includes(search.trim().toLowerCase()) ||
+  Project.toLowerCase().includes(search.trim().toLowerCase()) ||
+  AssignedTo.toLowerCase().includes(search.trim().toLowerCase()) ||
+  Priority.toLowerCase().includes(search.trim().toLowerCase()) ||
+  Status.toLowerCase().includes(search.trim().toLowerCase()) ||
+  ReportedBy.toLowerCase().includes(search.trim().toLowerCase())
 );
     return (
 
@@ -259,7 +230,7 @@ function BugTracker() {
           <tbody>
                         {filteredBugs.map((bug) => (
 
-              <tr key={bug.id}>
+              <tr key={bug._id}>
 
                 <td>
 
@@ -273,7 +244,7 @@ function BugTracker() {
 
                     <div>
 
-                      <strong>{bug.title}</strong>
+                      <strong>{bug.Bug}</strong>
 
                     </div>
 
@@ -281,15 +252,15 @@ function BugTracker() {
 
                 </td>
 
-                <td>{bug.project}</td>
+                <td>{bug.Project}</td>
 
-                <td>{bug.assignedTo}</td>
+                <td>{bug.AssignedTo}</td>
 
                 <td>
 
-                  <span className={`priority ${bug.priority.toLowerCase()}`}>
+                  <span className={`priority ${bug.Priority.toLowerCase()}`}>
 
-                    {bug.priority}
+                    {bug.Priority}
 
                   </span>
 
@@ -298,18 +269,18 @@ function BugTracker() {
                 <td>
 
                   <span
-                    className={`status ${bug.status
+                    className={`status ${bug.Status
                       .toLowerCase()
                       .replace(/\s/g, "-")}`}
                   >
 
-                    {bug.status}
+                    {bug.Status}
 
                   </span>
 
                 </td>
 
-                <td>{bug.reportedBy}</td>
+                <td>{bug.ReportedBy}</td>
 
                 <td>
 
@@ -342,5 +313,4 @@ function BugTracker() {
   );
 
 }
-
 export default BugTracker;

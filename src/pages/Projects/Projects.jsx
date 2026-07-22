@@ -13,20 +13,15 @@ import {
 } from "react-icons/hi2";
 
 function Projects() {
-
-  const projectStats = {
-
-    total: 12,
-
-    active: 8,
-
-    completed: 3,
-
-    planning: 1,
-
-  };
-
   const [projects,SetProjects] = useState([]);
+  const projectStats = {
+  total: projects.length,
+  active: projects.filter((p) => p.status === "Active").length,
+  completed: projects.filter((p) => p.status === "Completed").length,
+  planning: projects.filter((p) => p.status === "Planning").length,
+};
+
+  
   async function fetchProjects() {
     try {
       const response = await fetch("http://localhost:5000/projects");
@@ -41,18 +36,27 @@ function Projects() {
   }, []);
 console.log(projects);
   const [search,setSearch] = useState("");
-  const filteredProjects = projects.filter(
-  ({ name, manager, client, status, priority, progress }) => {
-    return (
-      name.toLowerCase().includes(search.trim().toLowerCase()) ||
-      manager.toLowerCase().includes(search.trim().toLowerCase()) ||
-      client.toLowerCase().includes(search.trim().toLowerCase()) ||
-      status.toLowerCase().includes(search.trim().toLowerCase()) ||
-      priority.toLowerCase().includes(search.trim().toLowerCase()) ||
-      progress.toString().includes(search.trim())
-    );
-  }
-);
+  const [statusFilter, setStatusFilter] = useState("");
+  const [priorityFilter, setPriorityFilter] = useState("");
+  const filteredProjects = projects.filter((project) => {
+  const keyword = search.trim().toLowerCase();
+
+  const matchesSearch =
+    project.name.toLowerCase().includes(keyword) ||
+    project.manager.toLowerCase().includes(keyword) ||
+    project.client.toLowerCase().includes(keyword) ||
+    project.status.toLowerCase().includes(keyword) ||
+    project.priority.toLowerCase().includes(keyword) ||
+    project.progress.toString().includes(keyword);
+
+  const matchesStatus =
+    statusFilter === "" || project.status === statusFilter;
+
+  const matchesPriority =
+    priorityFilter === "" || project.priority === priorityFilter;
+
+  return matchesSearch && matchesStatus && matchesPriority;
+});
 
   return (
 
@@ -153,25 +157,25 @@ console.log(projects);
           <input
             type="text"
             placeholder="Search project..."
-          onChange={(e)=>setSearch(e.target.value)}/>
+            value={search}
+            onChange={(e)=>setSearch(e.target.value)}/>
 
         </div>
 
         <div className="filters">
 
-          <select value={search} onChange={(e) => setSearch(e.target.value)}>
-
-            <option value="">All Status</option>
-
-            <option value="Planning">Planning</option>
-
-            <option value="Active">Active</option>
-
-            <option value="Completed">Completed</option>
-
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+          <option value="">All Status</option>
+          <option value="Planning">Planning</option>
+          <option value="Active">Active</option>
+          <option value="In-Progress">In-Progress</option>
+          <option value="Completed">Completed</option>
           </select>
 
-          <select value={search} onChange={(e) => setSearch(e.target.value)}>
+          <select value={priorityFilter} onChange={(e) => setPriorityFilter(e.target.value)}>
 
             <option value="">Priority</option>
 
