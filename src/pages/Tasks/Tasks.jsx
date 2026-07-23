@@ -16,26 +16,15 @@ import {
 function Tasks() {
 
   /* =========================
-      TASK STATISTICS
-  ========================= */
-
-  const taskStats = {
-
-    total: 42,
-
-    pending: 18,
-
-    inProgress: 16,
-
-    completed: 8,
-
-  };
-
-  /* =========================
       TASK DATA
   ========================= */
   const [tasks, setTasks] = useState([]);
-  const [projects,SetProjects] = useState([]);
+  const taskStats = {
+  total: tasks.length,
+  pending: tasks.filter((t) => t.Status === "Pending").length,
+  inProgress: tasks.filter((t) => t.Status === "In Progress").length,
+  completed: tasks.filter((t) => t.Status === "Completed").length,
+};
   async function fetchTasks() {
     try {
       const response = await fetch("http://localhost:5000/tasks");
@@ -50,16 +39,33 @@ function Tasks() {
   }, []);
 
   const [search, setSearch] = useState("");
-  const filteredTasks = tasks.filter(({ name, project, assignedTo, priority, status, dueDate }) => {
-    return (
-      name.toLowerCase().includes(search.trim().toLowerCase()) ||
-      project.toLowerCase().includes(search.trim().toLowerCase()) ||
-      assignedTo.toLowerCase().includes(search.trim().toLowerCase()) ||
-      priority.toLowerCase().includes(search.trim().toLowerCase()) ||
-      status.toLowerCase().includes(search.trim().toLowerCase()) ||
-      dueDate.includes(search.trim())
-    );
-  });
+  const [statusFilter, setStatusFilter] = useState("");
+  const [priorityFilter, setPriorityFilter] = useState("");
+  const filteredTasks = tasks.filter((task) => {
+
+    const keyword = search.trim().toLowerCase();
+
+    const matchesSearch =
+        (task.Name || "").toLowerCase().includes(keyword) ||
+        (task.Project || "").toLowerCase().includes(keyword) ||
+        (task.AssignedTo || "").toLowerCase().includes(keyword) ||
+        (task.Priority || "").toLowerCase().includes(keyword) ||
+        (task.Status || "").toLowerCase().includes(keyword) ||
+        (task.DueDate || "").toLowerCase().includes(keyword);
+
+    const matchesStatus =
+        statusFilter === "" ||
+        task.Status === statusFilter;
+
+    const matchesPriority =
+        priorityFilter === "" ||
+        task.Priority === priorityFilter;
+
+    return matchesSearch &&
+           matchesStatus &&
+           matchesPriority;
+
+});
   console.log(filteredTasks);
     return (
 
@@ -173,7 +179,7 @@ function Tasks() {
 
         <div className="filters">
 
-          <select value={search} onChange={(e) => setSearch(e.target.value)}>
+          <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
 
             <option value="">All Status</option>
 
@@ -185,7 +191,7 @@ function Tasks() {
 
           </select>
 
-          <select value={search} onChange={(e) => setSearch(e.target.value)}>
+          <select value={priorityFilter} onChange={(e) => setPriorityFilter(e.target.value)}>
 
             <option value="">Priority</option>
 
@@ -236,17 +242,17 @@ function Tasks() {
 
               <tr key={task._id}>
 
-                <td>{task.name}</td>
+                <td>{task.Name}</td>
 
-                <td>{task.project}</td>
+                <td>{task.Project}</td>
 
-                <td>{task.assignedTo}</td>
+                <td>{task.AssignedTo}</td>
 
                 <td>
 
-                  <span className={`priority ${task.priority.toLowerCase()}`}>
+                  <span className={`priority ${task.Priority.toLowerCase()}`}>
 
-                    {task.priority}
+                    {task.Priority}
 
                   </span>
 
@@ -255,12 +261,12 @@ function Tasks() {
                 <td>
 
                   <span
-                    className={`status ${task.status
+                    className={`status ${task.Status
                       .toLowerCase()
                       .replace(/\s/g, "-")}`}
                   >
 
-                    {task.status}
+                    {task.Status}
 
                   </span>
 
@@ -270,7 +276,7 @@ function Tasks() {
 
                     <span className="due-date">
 
-                        {task.dueDate}
+                        {new Date(task.DueDate).toLocaleDateString()}
 
                     </span>
 

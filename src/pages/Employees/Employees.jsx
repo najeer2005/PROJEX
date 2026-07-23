@@ -20,18 +20,13 @@ function Employees() {
       EMPLOYEE STATISTICS
   ========================= */
 
-  const employeeStats = {
-
-    total: 18,
-
-    active: 15,
-
-    onLeave: 2,
-
-    available: 13,
-
-  };
   const [employees, setEmployees] = useState([]);
+  const employeeStats = {
+  total: employees.length,
+  active: employees.filter((e) => e.Status === "Active").length,
+  onLeave: employees.filter((e) => e.Status === "On Leave").length,
+  available: employees.filter((e) => e.Status === "Available").length,
+};
   async function fetchEmployees() {
     try {
       const response = await fetch("http://localhost:5000/employees");
@@ -51,13 +46,29 @@ function Employees() {
   ========================= */
 
 const [search, setSearch] = useState("");
-const filteredEmployees = employees.filter((employee) =>
-  (employee.Employee || "").toLowerCase().includes(search.toLowerCase()) ||
-  (employee.EmployeeID || "").toLowerCase().includes(search.toLowerCase()) ||
-  (employee.Department || "").toLowerCase().includes(search.toLowerCase()) ||
-  (employee.Role || "").toLowerCase().includes(search.toLowerCase()) ||
-  (employee.Status || "").toLowerCase().includes(search.toLowerCase())
-);
+const filteredEmployees = employees.filter((employee) => {
+
+    const keyword = search.toLowerCase();
+
+    const matchesSearch =
+        employee.Employee.toLowerCase().includes(keyword) ||
+        employee.EmployeeID.toLowerCase().includes(keyword) ||
+        employee.Department.toLowerCase().includes(keyword) ||
+        employee.Role.toLowerCase().includes(keyword) ||
+        employee.Status.toLowerCase().includes(keyword);
+
+    const matchesDepartment =
+        departmentFilter === "" ||
+        employee.Department === departmentFilter;
+
+    const matchesStatus =
+        statusFilter === "" ||
+        employee.Status === statusFilter;
+
+    return matchesSearch &&
+           matchesDepartment &&
+           matchesStatus;
+});
 
 console.log("Employees State:", employees);
 console.log("Filtered Employees:", filteredEmployees);
@@ -175,31 +186,35 @@ console.log("Filtered Employees:", filteredEmployees);
 
         <div className="filters">
 
-          <select value ={search} onChange={(e) => setSearch(e.target.value)}>
+          const [departmentFilter, setDepartmentFilter] = useState("");
+
+          <select value ={departmentFilter} onChange={(e) => setDepartmentFilter(e.target.value)}>
 
             <option value ="">All Departments</option>
 
-            <option value = "frontend">Frontend</option>
+            <option value = "Frontend">Frontend</option>
 
-            <option>Backend</option>
+            <option value="Backend">Backend</option>
 
-            <option value="ui/ux">UI/UX</option>
+            <option value="UI/UX">UI/UX</option>
 
             <option value ="QA">QA</option>
 
-            <option value="devops">DevOps</option>
+            <option value="DevOps">DevOps</option>
 
           </select>
 
-          <select value ={search} onChange={(e) => setSearch(e.target.value)}>
+          const [statusFilter, setStatusFilter] = useState("");
+
+          <select value ={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
 
             <option value ="">All Status</option>
 
             <option value="Active">Active</option>
 
-            <option>Available</option>
+            <option value="Available">Available</option>
 
-            <option value ="onLeave">On Leave</option>
+            <option value ="On Leave">On Leave</option>
 
           </select>
 
