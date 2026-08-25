@@ -67,6 +67,7 @@ function Tasks() {
 
 });
   console.log(filteredTasks);
+
     return (
 
     <div className="page-content">
@@ -242,17 +243,17 @@ function Tasks() {
 
               <tr key={task._id}>
 
-                <td>{task.Name}</td>
+                <td>{task.name}</td>
 
-                <td>{task.Project}</td>
+                <td>{task.project}</td>
 
-                <td>{task.AssignedTo}</td>
+                <td>{task.assignedTo}</td>
 
                 <td>
 
-                  <span className={`priority ${task.Priority.toLowerCase()}`}>
+                  <span className={`priority ${(task.priority || "").toLowerCase().replace(/\s/g, "-")}`}>
 
-                    {task.Priority}
+                    {task.priority}
 
                   </span>
 
@@ -261,12 +262,12 @@ function Tasks() {
                 <td>
 
                   <span
-                    className={`status ${task.Status
+                    className={`status ${task.status
                       .toLowerCase()
                       .replace(/\s/g, "-")}`}
                   >
 
-                    {task.Status}
+                    {task.status}
 
                   </span>
 
@@ -276,7 +277,7 @@ function Tasks() {
 
                     <span className="due-date">
 
-                        {new Date(task.DueDate).toLocaleDateString()}
+                        {new Date(task.dueDate).toLocaleDateString()}
 
                     </span>
 

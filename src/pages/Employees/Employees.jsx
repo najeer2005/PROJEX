@@ -46,6 +46,8 @@ function Employees() {
   ========================= */
 
 const [search, setSearch] = useState("");
+const [departmentFilter, setDepartmentFilter] = useState("");
+const [statusFilter, setStatusFilter] = useState("");
 const filteredEmployees = employees.filter((employee) => {
 
     const keyword = search.toLowerCase();
@@ -186,7 +188,6 @@ console.log("Filtered Employees:", filteredEmployees);
 
         <div className="filters">
 
-          const [departmentFilter, setDepartmentFilter] = useState("");
 
           <select value ={departmentFilter} onChange={(e) => setDepartmentFilter(e.target.value)}>
 
@@ -204,7 +205,6 @@ console.log("Filtered Employees:", filteredEmployees);
 
           </select>
 
-          const [statusFilter, setStatusFilter] = useState("");
 
           <select value ={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
 

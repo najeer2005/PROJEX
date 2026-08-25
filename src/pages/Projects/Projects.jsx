@@ -42,12 +42,12 @@ console.log(projects);
   const keyword = search.trim().toLowerCase();
 
   const matchesSearch =
-    project.name.toLowerCase().includes(keyword) ||
-    project.manager.toLowerCase().includes(keyword) ||
-    project.client.toLowerCase().includes(keyword) ||
-    project.status.toLowerCase().includes(keyword) ||
-    project.priority.toLowerCase().includes(keyword) ||
-    project.progress.toString().includes(keyword);
+    (project.name || "").toLowerCase().includes(keyword) ||
+    (project.manager || "").toLowerCase().includes(keyword) ||
+    (project.client || "").toLowerCase().includes(keyword) ||
+    (project.status || "").toLowerCase().includes(keyword) ||
+    (project.priority || "").toLowerCase().includes(keyword) ||
+    (project.progress ?? "").toString().includes(keyword);
 
   const matchesStatus =
     statusFilter === "" || project.status === statusFilter;
@@ -57,6 +57,7 @@ console.log(projects);
 
   return matchesSearch && matchesStatus && matchesPriority;
 });
+  const [showModal, setShowModal] = useState(false);
 
   return (
 
@@ -74,7 +75,8 @@ console.log(projects);
 
         </div>
 
-        <button className="primary-btn">
+        
+        <button className="primary-btn" onClick={() => setShowModal(true)}>
 
           <HiPlus />
 
@@ -225,17 +227,17 @@ console.log(projects);
 
               <tr key={project._id}>
 
-                <td>{project.name}</td>
+                <td>{project.name || "N/A"}</td>
 
-                <td>{project.manager}</td>
+                <td>{project.manager || "N/A"}</td>
 
-                <td>{project.client}</td>
+                <td>{project.client || "N/A"}</td>
 
                 <td>
 
-                  <span className={`status ${project.status.toLowerCase()}`}>
+                  <span className={`status ${project.status?.toLowerCase() || "unknown"}`}>
 
-                    {project.status}
+                    {project.status || "N/A"}
 
                   </span>
 
@@ -243,9 +245,9 @@ console.log(projects);
 
                 <td>
 
-                  <span className={`priority ${project.priority.toLowerCase()}`}>
+                  <span className={`priority ${project.priority?.toLowerCase() || "unknown"}`}>
 
-                    {project.priority}
+                    {project.priority || "N/A"}
 
                   </span>
 
@@ -257,12 +259,12 @@ console.log(projects);
 
                     <div
                       className="progress-fill"
-                      style={{ width: `${project.progress}%` }}
+                      style={{ width: `${project.progress ?? 0}%` }}
                     ></div>
 
                   </div>
 
-                  <small>{project.progress}%</small>
+                  <small>{project.progress || 0}%</small>
 
                 </td>
 
@@ -291,6 +293,12 @@ console.log(projects);
         </table>
 
       </div>
+      {showModal && (
+    <ProjectModal
+      onClose={() => setShowModal(false)}
+      onProjectAdded={fetchProjects}
+    />
+)}
 
     </div>
 

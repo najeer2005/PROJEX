@@ -1,7 +1,5 @@
 import "./Teams.css";
-import { use } from "react";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 
 import {
   HiMagnifyingGlass,
@@ -15,22 +13,22 @@ import {
 } from "react-icons/hi2";
 
 function Teams() {
+  
+  const [teams, setTeams] = useState([]);
+  const [search, setSearch] = useState("");
+  const [departmentFilter, setDepartmentFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
 
   /* =========================
       TEAM STATISTICS
   ========================= */
 
-  const teamStats = {
-
-    totalTeams: 5,
-
-    totalMembers: 18,
-
-    activeProjects: 12,
-
-    teamLeads: 5,
-
-  };
+const teamStats = {
+    totalTeams: teams.length,
+    totalMembers: teams.reduce((sum, team) => sum + team.Members, 0),
+    activeProjects: teams.reduce((sum, team) => sum + team.Projects, 0),
+    teamLeads: teams.length,
+};
 
   /* =========================
       TEAM DATA
@@ -49,14 +47,29 @@ function Teams() {
     fetchTeams();
   }, []);
 
-  const [teams, setTeams] = useState([]);
-  const [search, setSearch] = useState("");
-  const filteredTeams = teams.filter(({Team, TeamLead, Department, Members, Projects, Status}) =>
-  Team.toLowerCase().includes(search.trim().toLowerCase()) ||
-  TeamLead.toLowerCase().includes(search.trim().toLowerCase()) ||
-  Department.toLowerCase().includes(search.trim().toLowerCase()) ||
-  Status.toLowerCase().includes(search.trim().toLowerCase()) 
-);
+  const filteredTeams = teams.filter((team)=>{
+
+const keyword = search.trim().toLowerCase();
+
+const matchesSearch =
+(team.Team || "").toLowerCase().includes(keyword) ||
+(team.TeamLead || "").toLowerCase().includes(keyword) ||
+(team.Department || "").toLowerCase().includes(keyword) ||
+(team.Status || "").toLowerCase().includes(keyword);
+
+const matchesDepartment =
+departmentFilter === "" ||
+team.Department === departmentFilter;
+
+const matchesStatus =
+statusFilter === "" ||
+team.Status === statusFilter;
+
+return matchesSearch &&
+matchesDepartment &&
+matchesStatus;
+
+});
     return (
 
     <div className="page-content">
@@ -169,7 +182,7 @@ function Teams() {
 
         <div className="filters">
 
-          <select value={search} onChange={(e) => setSearch(e.target.value)}>
+          <select value={departmentFilter} onChange={(e) => setDepartmentFilter(e.target.value)}>
 
             <option value="">All Departments</option>
 
@@ -183,7 +196,7 @@ function Teams() {
 
           </select>
 
-          <select value={search} onChange={(e) => setSearch(e.target.value)}>
+          <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
 
             <option value="">All Status</option>
 
@@ -232,7 +245,7 @@ function Teams() {
           <tbody>
                         {filteredTeams.map((team) => (
 
-              <tr key={team.id}>
+              <tr key={team._id}>
 
                 <td>
 
