@@ -52,6 +52,15 @@ async function fetchBugs() {
     console.error(error);
   }
 }
+const handleDelete = async (bugId) => {
+  if (!window.confirm("Delete this bug report?")) return;
+  try {
+    const response = await fetch(`http://localhost:5000/bugreports/delete/${bugId}`, { method: "DELETE" });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || "Failed to delete bug report");
+    setBugs((previous) => previous.filter((bug) => bug._id !== bugId));
+  } catch (error) { alert(error.message); }
+};
 const handleChange = (event) => setFormData((previous) => ({ ...previous, [event.target.name]: event.target.value }));
 const handleSubmit = async (event) => {
   event.preventDefault();
@@ -318,7 +327,7 @@ const handleSubmit = async (event) => {
 
                   </button>
 
-                  <button className="action delete">
+                  <button className="action delete" onClick={() => handleDelete(bug._id)} aria-label={`Delete ${bug.Bug}`}>
 
                     <HiTrash />
 

@@ -1,7 +1,5 @@
 import "./Dashboard.css";
-import Sidebar from "./Sidebar";
-import TopNavbar from "./TopNavbar";
-
+import { useEffect, useState } from "react";
 import {
   HiFolderOpen,
   HiClipboardDocumentList,
@@ -11,575 +9,79 @@ import {
   HiArrowTrendingUp,
   HiCalendarDays,
   HiBolt,
-  HiClock,
   HiUserGroup,
 } from "react-icons/hi2";
 
+const apiUrl = "http://localhost:5000";
+
 function Dashboard() {
+  const [dashboardData, setDashboardData] = useState({ projects: [], tasks: [], bugs: [], employees: [], teams: [] });
 
-  /* =========================
-      DASHBOARD STATS
-  ========================= */
+  useEffect(() => {
+    const loadDashboard = async () => {
+      try {
+        const responses = await Promise.all([
+          fetch(`${apiUrl}/projects`),
+          fetch(`${apiUrl}/tasks`),
+          fetch(`${apiUrl}/bugreports`),
+          fetch(`${apiUrl}/employees`),
+          fetch(`${apiUrl}/teams`),
+        ]);
+        const [projects, tasks, bugs, employees, teams] = await Promise.all(responses.map((response) => response.json()));
+        setDashboardData({ projects: projects.projects || [], tasks, bugs: bugs.bugReports || [], employees, teams });
+      } catch (error) {
+        console.error("Error loading dashboard:", error);
+      }
+    };
+    loadDashboard();
+  }, []);
 
-  const dashboardStats = {
-
-    projects: 12,
-
-    pendingTasks: 18,
-
-    completedTasks: 246,
-
-    openBugs: 6,
-
-    employees: 18,
-
-  };
-
-  /* =========================
-      KPI CARDS
-  ========================= */
-
-  const cards = [
-
-    {
-      title: "Projects",
-      value: dashboardStats.projects,
-      subtitle: "+2 This Week",
-      icon: <HiFolderOpen />,
-      color: "blue",
-    },
-
-    {
-      title: "Tasks",
-      value: dashboardStats.pendingTasks,
-      subtitle: "Pending",
-      icon: <HiClipboardDocumentList />,
-      color: "orange",
-    },
-
-    {
-      title: "Completed",
-      value: dashboardStats.completedTasks,
-      subtitle: "Completed Tasks",
-      icon: <HiCheckCircle />,
-      color: "green",
-    },
-
-    {
-      title: "Bugs",
-      value: dashboardStats.openBugs,
-      subtitle: "Open Bugs",
-      icon: <HiBugAnt />,
-      color: "red",
-    },
-
-    {
-      title: "Employees",
-      value: dashboardStats.employees,
-      subtitle: "Active Members",
-      icon: <HiUsers />,
-      color: "purple",
-    },
-
-  ];
-
-  /* =========================
-      RECENT TASKS
-  ========================= */
-
-  const recentTasks = [
-
-    {
-      title: "Login API",
-      assignedTo: "Rahul",
-      priority: "High",
-      status: "In Progress",
-    },
-
-    {
-      title: "Payment Gateway",
-      assignedTo: "Priya",
-      priority: "Medium",
-      status: "Testing",
-    },
-
-    {
-      title: "Dashboard UI",
-      assignedTo: "David",
-      priority: "Low",
-      status: "Completed",
-    },
-
-    {
-      title: "User Management",
-      assignedTo: "John",
-      priority: "High",
-      status: "Pending",
-    },
-
-  ];
-
-  /* =========================
-      RECENT ACTIVITY
-  ========================= */
-
+  const { projects, tasks, bugs, employees, teams } = dashboardData;
+  const recentTasks = [...tasks].sort((first, second) => new Date(second.createdAt || 0) - new Date(first.createdAt || 0)).slice(0, 4);
+  const activeProjects = projects.filter((project) => ["Active", "In-Progress"].includes(project.status)).slice(0, 4);
+  const teamPerformance = teams.map((team) => ({ name: team.Team, tasks: tasks.filter((task) => task.AssignedTo === team.TeamLead).length }));
+  const deadlines = [...tasks].filter((task) => task.DueDate).sort((first, second) => new Date(first.DueDate) - new Date(second.DueDate)).slice(0, 3);
   const recentActivity = [
-
-    {
-      user: "Rahul",
-      action: "Created CRM Project",
-      time: "2 min ago",
-    },
-
-    {
-      user: "Priya",
-      action: "Completed Task #45",
-      time: "8 min ago",
-    },
-
-    {
-      user: "John",
-      action: "Resolved Bug #17",
-      time: "12 min ago",
-    },
-
-    {
-      user: "David",
-      action: "Added New Employee",
-      time: "25 min ago",
-    },
-
+    ...projects.map((project) => ({ user: project.manager, action: `Created ${project.name}`, date: project.createdAt })),
+    ...tasks.map((task) => ({ user: task.AssignedTo, action: `Added ${task.Name}`, date: task.createdAt })),
+    ...employees.map((employee) => ({ user: employee.Employee, action: "Added new employee", date: employee.createdAt })),
+    ...bugs.map((bug) => ({ user: bug.ReportedBy, action: `Reported ${bug.Bug}`, date: bug.createdAt })),
+  ].sort((first, second) => new Date(second.date || 0) - new Date(first.date || 0)).slice(0, 4);
+  const dashboardStats = {
+    projects: projects.length,
+    pendingTasks: tasks.filter((task) => task.Status === "Pending").length,
+    completedTasks: tasks.filter((task) => task.Status === "Completed").length,
+    openBugs: bugs.filter((bug) => bug.Status === "Open").length,
+    employees: employees.filter((employee) => employee.Status === "Active").length,
+  };
+  const cards = [
+    { title: "Projects", value: dashboardStats.projects, subtitle: "Recently added", icon: <HiFolderOpen />, color: "blue" },
+    { title: "Tasks", value: dashboardStats.pendingTasks, subtitle: "Pending", icon: <HiClipboardDocumentList />, color: "orange" },
+    { title: "Completed", value: dashboardStats.completedTasks, subtitle: "Completed Tasks", icon: <HiCheckCircle />, color: "green" },
+    { title: "Bugs", value: dashboardStats.openBugs, subtitle: "Open", icon: <HiBugAnt />, color: "red" },
+    { title: "Employees", value: dashboardStats.employees, subtitle: "Active Members", icon: <HiUsers />, color: "purple" },
   ];
-
-  /* =========================
-      ACTIVE PROJECTS
-  ========================= */
-
-  const activeProjects = [
-
-    {
-      name: "CRM Portal",
-      progress: "82%",
-      status: "On Track",
-    },
-
-    {
-      name: "Inventory System",
-      progress: "64%",
-      status: "Delayed",
-    },
-
-    {
-      name: "HRMS",
-      progress: "91%",
-      status: "Testing",
-    },
-
-  ];
-
-  /* =========================
-      TEAM PERFORMANCE
-  ========================= */
-
-  const teamPerformance = [
-
-    {
-      name: "Rahul",
-      tasks: 12,
-    },
-
-    {
-      name: "Priya",
-      tasks: 9,
-    },
-
-    {
-      name: "John",
-      tasks: 7,
-    },
-
-    {
-      name: "David",
-      tasks: 10,
-    },
-
-  ];
-
-  /* =========================
-      UPCOMING DEADLINES
-  ========================= */
-
-  const deadlines = [
-
-    {
-      project: "CRM Portal",
-      due: "Tomorrow",
-    },
-
-    {
-      project: "Inventory API",
-      due: "18 Jul",
-    },
-
-    {
-      project: "Dashboard UI",
-      due: "20 Jul",
-    },
-
-  ];
-
-  const today = new Date().toLocaleDateString("en-GB", {
-
-    day: "2-digit",
-
-    month: "short",
-
-    year: "numeric",
-
-  });
+  const formatDate = (date) => date ? new Date(date).toLocaleDateString("en-GB", { day: "2-digit", month: "short" }) : "-";
+  const today = new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
 
   return (
-
     <div className="dashboard">
-
-      {/* =========================
-          HEADER
-      ========================= */}
-
-      <div className="dashboard-header">
-
-        <div>
-
-          <h2>Dashboard</h2>
-
-          <p>Project Delivery Overview</p>
-
-        </div>
-
-        <div className="dashboard-date">
-
-          <HiCalendarDays />
-
-          <span>{today}</span>
-
-        </div>
-
-      </div>
-
-      {/* =========================
-          KPI CARDS
-      ========================= */}
-
-      <section className="stats-grid">
-
-        {cards.map((card) => (
-
-          <div className="stat-card" key={card.title}>
-
-            <div className={`stat-icon ${card.color}`}>
-
-              {card.icon}
-
-            </div>
-
-            <h2>{card.value}</h2>
-
-            <h4>{card.title}</h4>
-
-            <p>
-
-              <HiArrowTrendingUp className="trend-icon" />
-
-              {card.subtitle}
-
-            </p>
-
-          </div>
-
-        ))}
-
-      </section>
-            {/* =========================
-          MAIN GRID
-      ========================= */}
-
+      <div className="dashboard-header"><div><h2>Dashboard</h2><p>Project Delivery Overview</p></div><div className="dashboard-date"><HiCalendarDays /><span>{today}</span></div></div>
+      <section className="stats-grid">{cards.map((card) => <div className="stat-card" key={card.title}><div className={`stat-icon ${card.color}`}>{card.icon}</div><h2>{card.value}</h2><h4>{card.title}</h4><p><HiArrowTrendingUp className="trend-icon" />{card.subtitle}</p></div>)}</section>
       <section className="dashboard-grid">
-
-        {/* =========================
-            RECENT TASKS
-        ========================= */}
-
-        <div className="dashboard-card">
-
-          <div className="card-header">
-
-            <h3>Recent Tasks</h3>
-
-            <button>View All</button>
-
-          </div>
-
-          <div className="task-list">
-
-            {recentTasks.map((task) => (
-
-              <div className="task-item" key={task.title}>
-
-                <div className="task-left">
-
-                  <strong>{task.title}</strong>
-
-                  <span>Assigned to {task.assignedTo}</span>
-
-                </div>
-
-                <div className="task-right">
-
-                  <span className={`priority ${task.priority.toLowerCase()}`}>
-
-                    {task.priority}
-
-                  </span>
-
-                  <small>{task.status}</small>
-
-                </div>
-
-              </div>
-
-            ))}
-
-          </div>
-
-        </div>
-
-        {/* =========================
-            RECENT ACTIVITY
-        ========================= */}
-
-        <div className="dashboard-card">
-
-          <div className="card-header">
-
-            <h3>Recent Activity</h3>
-
-            <button>View All</button>
-
-          </div>
-
-          <div className="activity-list">
-
-            {recentActivity.map((activity, index) => (
-
-              <div className="activity-item" key={index}>
-
-                <div className="activity-icon">
-
-                  <HiBolt />
-
-                </div>
-
-                <div className="activity-content">
-
-                  <strong>{activity.user}</strong>
-
-                  <p>{activity.action}</p>
-
-                </div>
-
-                <small>{activity.time}</small>
-
-              </div>
-
-            ))}
-
-          </div>
-
-        </div>
-
+        <div className="dashboard-card"><div className="card-header"><h3>Recent Tasks</h3><button>View All</button></div><div className="task-list">{recentTasks.map((task) => <div className="task-item" key={task._id}><div className="task-left"><strong>{task.Name}</strong><span>Assigned to {task.AssignedTo}</span></div><div className="task-right"><span className={`priority ${(task.Priority || "").toLowerCase()}`}>{task.Priority}</span><small>{task.Status}</small></div></div>)}</div></div>
+        <div className="dashboard-card"><div className="card-header"><h3>Recent Activity</h3><button>View All</button></div><div className="activity-list">{recentActivity.map((activity, index) => <div className="activity-item" key={`${activity.action}-${index}`}><div className="activity-icon"><HiBolt /></div><div className="activity-content"><strong>{activity.user}</strong><p>{activity.action}</p></div><small>{formatDate(activity.date)}</small></div>)}</div></div>
       </section>
-            {/* =========================
-          SECOND GRID
-      ========================= */}
-
       <section className="dashboard-grid">
-
-        {/* =========================
-            ACTIVE PROJECTS
-        ========================= */}
-
-        <div className="dashboard-card">
-
-          <div className="card-header">
-
-            <h3>Active Projects</h3>
-
-            <button>View All</button>
-
-          </div>
-
-          <div className="project-list">
-
-            {activeProjects.map((project) => (
-
-              <div className="project-item" key={project.name}>
-
-                <div className="project-details">
-
-                  <strong>{project.name}</strong>
-
-                  <span>{project.status}</span>
-
-                </div>
-
-                <div className="project-progress">
-
-                  <div className="progress-bar">
-
-                    <div
-                      className="progress-fill"
-                      style={{ width: project.progress }}
-                    ></div>
-
-                  </div>
-
-                  <small>{project.progress}</small>
-
-                </div>
-
-              </div>
-
-            ))}
-
-          </div>
-
-        </div>
-
-        {/* =========================
-            TEAM PERFORMANCE
-        ========================= */}
-
-        <div className="dashboard-card">
-
-          <div className="card-header">
-
-            <h3>Team Performance</h3>
-
-            <button>View All</button>
-
-          </div>
-
-          <div className="team-list">
-
-            {teamPerformance.map((member) => (
-
-              <div className="team-item" key={member.name}>
-
-                <div className="team-avatar">
-
-                  {member.name.charAt(0)}
-
-                </div>
-
-                <div className="team-details">
-
-                  <strong>{member.name}</strong>
-
-                  <span>{member.tasks} Tasks Assigned</span>
-
-                </div>
-
-                <HiUserGroup className="team-icon" />
-
-              </div>
-
-            ))}
-
-          </div>
-
-        </div>
-
+        <div className="dashboard-card"><div className="card-header"><h3>Active Projects</h3><button>View All</button></div><div className="project-list">{activeProjects.map((project) => <div className="project-item" key={project._id}><div className="project-details"><strong>{project.name}</strong><span>{project.status}</span></div><div className="project-progress"><div className="progress-bar"><div className="progress-fill" style={{ width: `${project.progress || 0}%` }} /></div><small>{project.progress || 0}%</small></div></div>)}</div></div>
+        <div className="dashboard-card"><div className="card-header"><h3>Team Performance</h3><button>View All</button></div><div className="team-list">{teamPerformance.map((member) => <div className="team-item" key={member.name}><div className="team-avatar">{(member.name || "?").charAt(0)}</div><div className="team-details"><strong>{member.name}</strong><span>{member.tasks} Tasks Assigned</span></div><HiUserGroup className="team-icon" /></div>)}</div></div>
       </section>
-      {/* =========================
-    THIRD GRID
-      ========================= */}
-
-    <section className="third-grid">
-
-    {/* Upcoming Deadlines */}
-
-    <div className="dashboard-card">
-
-      <div className="card-header">
-
-        <h3>Upcoming Deadlines</h3>
-
-        <button>View All</button>
-
-      </div>
-
-      <div className="deadline-list">
-
-        {deadlines.map((item) => (
-
-        <div className="deadline-item" key={item.project}>
-
-          <div className="deadline-info">
-
-            <strong>{item.project}</strong>
-
-            <span>Due Date</span>
-
-          </div>
-
-          <div className="deadline-date">
-
-            {item.due}
-
-          </div>
-
-        </div>
-
-      ))}
-
+      <section className="third-grid">
+        <div className="dashboard-card"><div className="card-header"><h3>Upcoming Deadlines</h3><button>View All</button></div><div className="deadline-list">{deadlines.map((task) => <div className="deadline-item" key={task._id}><div className="deadline-info"><strong>{task.Name}</strong><span>{task.Project}</span></div><div className="deadline-date">{formatDate(task.DueDate)}</div></div>)}</div></div>
+        <div className="dashboard-card"><div className="card-header"><h3>Quick Actions</h3></div><div className="quick-actions"><button className="action-btn">+ New Project</button><button className="action-btn">+ New Task</button><button className="action-btn">+ Add Employee</button><button className="action-btn">+ Report Bug</button></div></div>
+      </section>
     </div>
-
-    </div>
-
-    {/* Quick Actions */}
-
-       <div className="dashboard-card">
-
-        <div className="card-header">
-
-          <h3>Quick Actions</h3>
-
-        </div>
-
-        <div className="quick-actions">
-
-        <button className="action-btn">
-              + New Project
-        </button>
-
-        <button className="action-btn">
-              + New Task
-        </button>
-
-        <button className="action-btn">
-              + Add Employee
-        </button>
-
-        <button className="action-btn">
-              + Report Bug
-        </button>
-
-      </div>
-
-    </div>
-
-    </section>
-  </div>
   );
 }
+
 export default Dashboard;

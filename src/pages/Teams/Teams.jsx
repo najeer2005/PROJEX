@@ -51,6 +51,16 @@ const teamStats = {
     fetchTeams();
   }, []);
 
+  const handleDelete = async (teamId) => {
+    if (!window.confirm("Delete this team?")) return;
+    try {
+      const response = await fetch(`http://localhost:5000/teams/delete/${teamId}`, { method: "DELETE" });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to delete team");
+      setTeams((previous) => previous.filter((team) => team._id !== teamId));
+    } catch (error) { alert(error.message); }
+  };
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((previous) => ({ ...previous, [name]: ["Members", "Projects"].includes(name) ? Number(value) : value }));
@@ -345,7 +355,7 @@ matchesStatus;
 
                   </button>
 
-                  <button className="action delete">
+                  <button className="action delete" onClick={() => handleDelete(team._id)} aria-label={`Delete ${team.Team}`}>
 
                     <HiTrash />
 

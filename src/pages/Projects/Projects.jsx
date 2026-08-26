@@ -35,6 +35,16 @@ function Projects() {
   useEffect(() => {
     fetchProjects();
   }, []);
+
+  const handleDelete = async (projectId) => {
+    if (!window.confirm("Delete this project?")) return;
+    try {
+      const response = await fetch(`http://localhost:5000/projects/delete/${projectId}`, { method: "DELETE" });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to delete project");
+      SetProjects((previous) => previous.filter((project) => project._id !== projectId));
+    } catch (error) { alert(error.message); }
+  };
 console.log(projects);
   const [search,setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
@@ -277,7 +287,7 @@ console.log(projects);
 
                   </button>
 
-                  <button className="action delete">
+                  <button className="action delete" onClick={() => handleDelete(project._id)} aria-label={`Delete ${project.name}`}>
 
                     <HiTrash />
 

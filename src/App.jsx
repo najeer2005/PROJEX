@@ -12,7 +12,7 @@ import Projects from "./pages/Projects/Projects";
 import Tasks from "./pages/Tasks/Tasks";
 import Employees from "./pages/Employees/Employees";
 import Teams from "./pages/Teams/Teams";
-import BugTracker from "./pages/Bug Tracker/BugTracker";
+import BugTracker from "./pages/BugTracker/BugTracker";
 import Reports from "./pages/Reports/Reports";
 import Calendar from "./pages/Calendar/Calendar";
 

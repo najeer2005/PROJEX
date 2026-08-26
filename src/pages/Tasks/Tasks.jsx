@@ -39,6 +39,16 @@ function Tasks() {
     fetchTasks();
   }, []);
 
+  const handleDelete = async (taskId) => {
+    if (!window.confirm("Delete this task?")) return;
+    try {
+      const response = await fetch(`http://localhost:5000/tasks/delete/${taskId}`, { method: "DELETE" });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to delete task");
+      setTasks((previous) => previous.filter((task) => task._id !== taskId));
+    } catch (error) { alert(error.message); }
+  };
+
   const handleChange = (event) => setFormData((previous) => ({ ...previous, [event.target.name]: event.target.value }));
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -317,7 +327,7 @@ function Tasks() {
 
                   </button>
 
-                  <button className="action delete">
+                  <button className="action delete" onClick={() => handleDelete(task._id)} aria-label={`Delete ${task.Name}`}>
 
                     <HiTrash />
 

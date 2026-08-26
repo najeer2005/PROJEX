@@ -21,6 +21,9 @@ const Schema = new mongoose.Schema(
             type: String,
             required: true,
             enum : ["Generated", "Pending"]
+        },
+        "FilePath": {
+            type: String
         }
 },{timestamps: true}
 );

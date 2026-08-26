@@ -45,6 +45,16 @@ function Employees() {
     fetchEmployees();
   }, []);
 
+  const handleDelete = async (employeeId) => {
+    if (!window.confirm("Delete this employee?")) return;
+    try {
+      const response = await fetch(`http://localhost:5000/employees/delete/${employeeId}`, { method: "DELETE" });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to delete employee");
+      setEmployees((previous) => previous.filter((employee) => employee._id !== employeeId));
+    } catch (error) { alert(error.message); }
+  };
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((previous) => ({ ...previous, [name]: name === "Projects" ? Number(value) : value }));
@@ -347,7 +357,7 @@ console.log("Filtered Employees:", filteredEmployees);
 
                   </button>
 
-                  <button className="action delete">
+                  <button className="action delete" onClick={() => handleDelete(employee._id)} aria-label={`Delete ${employee.Employee}`}>
 
                     <HiTrash />
 

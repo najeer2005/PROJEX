@@ -1,10 +1,15 @@
 import mongoose from "mongoose";
+import fs from "node:fs/promises";
+import path from "node:path";
 import Reports from "../models/ReportsModel.js";
 
 
 export async function generateReport(req, res) {
     try {
-        const report = await Reports.create(req.body);
+        const report = await Reports.create({
+            ...req.body,
+            FilePath: req.file ? `/uploads/${req.file.filename}` : undefined,
+        });
         res.status(201).json(report);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -40,6 +45,12 @@ export async function updateReport(req, res) {
 export async function deleteReport(req, res) {
     try {
         const report = await Reports.findByIdAndDelete(req.params.id);
+        if (!report) {
+            return res.status(404).json({ message: "Report not found" });
+        }
+        if (report.FilePath) {
+            await fs.unlink(path.join(process.cwd(), report.FilePath.replace(/^\//, ""))).catch(() => {});
+        }
         res.status(200).json({ message: "Report deleted successfully", report });
     } catch (error) {
         res.status(500).json({ message: error.message });

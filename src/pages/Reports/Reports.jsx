@@ -1,5 +1,5 @@
 import "./Reports.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FormModal from "../../components/FormModal";
 
 import {
@@ -20,91 +20,65 @@ function Reports() {
       REPORT STATISTICS
   ========================= */
 
+  const [reports, setReports] = useState([]);
   const reportStats = {
-
-    total: 24,
-
-    projectReports: 8,
-
-    taskReports: 10,
-
-    bugReports: 6,
-
+    total: reports.length,
+    projectReports: reports.filter((report) => report.Category === "Project").length,
+    taskReports: reports.filter((report) => report.Category === "Task").length,
+    bugReports: reports.filter((report) => report.Category === "Bug").length,
   };
 
   /* =========================
       REPORT DATA
   ========================= */
 
-  const reports = [
-
-    {
-      id: 1,
-      name: "Monthly Project Report",
-      category: "Project",
-      generatedBy: "Rahul",
-      date: "15 Jul 2026",
-      status: "Generated",
-    },
-
-    {
-      id: 2,
-      name: "Task Completion Report",
-      category: "Task",
-      generatedBy: "Priya",
-      date: "14 Jul 2026",
-      status: "Generated",
-    },
-
-    {
-      id: 3,
-      name: "Bug Analysis Report",
-      category: "Bug",
-      generatedBy: "John",
-      date: "13 Jul 2026",
-      status: "Pending",
-    },
-
-    {
-      id: 4,
-      name: "Employee Performance",
-      category: "Employee",
-      generatedBy: "David",
-      date: "12 Jul 2026",
-      status: "Generated",
-    },
-
-    {
-      id: 5,
-      name: "Project Timeline Report",
-      category: "Project",
-      generatedBy: "Sneha",
-      date: "11 Jul 2026",
-      status: "Generated",
-    },
-
-  ];
   const [search,setSearch] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({ ReportName: "", Category: "Project", GeneratedBy: "", Date: "", Status: "Pending" });
+  const [formData, setFormData] = useState({ ReportName: "", Category: "Project", GeneratedBy: "", Date: "", Status: "Pending", reportFile: null });
   const handleChange = (event) => setFormData((previous) => ({ ...previous, [event.target.name]: event.target.value }));
+  const fetchReports = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/reports");
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to load reports");
+      setReports(data);
+    } catch (error) { console.error(error); }
+  };
+  useEffect(() => { fetchReports(); }, []);
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/reports/add", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(formData) });
+      const payload = new FormData();
+      Object.entries(formData).forEach(([key, value]) => {
+        if (value !== null && value !== "") payload.append(key, value);
+      });
+      const response = await fetch("http://localhost:5000/reports/add", { method: "POST", body: payload });
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || "Failed to generate report");
       setShowForm(false);
+      setFormData({ ReportName: "", Category: "Project", GeneratedBy: "", Date: "", Status: "Pending", reportFile: null });
+      fetchReports();
     } catch (error) { alert(error.message); } finally { setLoading(false); }
   };
-  const filteredReports = reports.filter(({ name, category, generatedBy, status }) =>
-  name.toLowerCase().includes(search.trim().toLowerCase()) ||
-  category.toLowerCase().includes(search.trim().toLowerCase()) ||
-  generatedBy.toLowerCase().includes(search.trim().toLowerCase()) ||
-  status.toLowerCase().includes(search.trim().toLowerCase())
-);
+  const handleDelete = async (reportId) => {
+    if (!window.confirm("Delete this report?")) return;
+    try {
+      const response = await fetch(`http://localhost:5000/reports/delete/${reportId}`, { method: "DELETE" });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to delete report");
+      setReports((previous) => previous.filter((report) => report._id !== reportId));
+    } catch (error) { alert(error.message); }
+  };
+  const filteredReports = reports.filter((report) => {
+    const keyword = search.trim().toLowerCase();
+    return [report.ReportName, report.Category, report.GeneratedBy, report.Status].some((value) => (value || "").toLowerCase().includes(keyword)) &&
+      (!categoryFilter || report.Category === categoryFilter) &&
+      (!statusFilter || report.Status === statusFilter);
+  });
     return (
 
     <div className="page-content">
@@ -140,6 +114,7 @@ function Reports() {
           <div className="form-field"><label htmlFor="report-generated-by">Generated By</label><input id="report-generated-by" name="GeneratedBy" value={formData.GeneratedBy} onChange={handleChange} required /></div>
           <div className="form-field"><label htmlFor="report-date">Report Date</label><input id="report-date" type="date" name="Date" value={formData.Date} onChange={handleChange} required /></div>
           <div className="form-field"><label htmlFor="report-status">Status</label><select id="report-status" name="Status" value={formData.Status} onChange={handleChange}><option>Pending</option><option>Generated</option></select></div>
+          <div className="form-field full-width"><label htmlFor="report-file">PDF Document</label><input id="report-file" type="file" name="reportFile" accept="application/pdf,.pdf" onChange={(event) => setFormData((previous) => ({ ...previous, reportFile: event.target.files[0] || null }))} required /></div>
         </FormModal>
       )}
 
@@ -227,7 +202,7 @@ function Reports() {
 
         <div className="filters">
 
-          <select value={search} onChange={(e) => setSearch(e.target.value)}>
+          <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
 
             <option value="">All Categories</option>
 
@@ -241,7 +216,7 @@ function Reports() {
 
           </select>
 
-          <select value={search} onChange={(e) => setSearch(e.target.value)}>
+          <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
 
             <option value="">All Status</option>
 
@@ -286,7 +261,7 @@ function Reports() {
           <tbody>
                         {filteredReports.map((report) => (
 
-              <tr key={report.id}>
+              <tr key={report._id}>
 
                 <td>
 
@@ -300,7 +275,7 @@ function Reports() {
 
                     <div>
 
-                      <strong>{report.name}</strong>
+                      <strong>{report.ReportName}</strong>
 
                     </div>
 
@@ -308,21 +283,21 @@ function Reports() {
 
                 </td>
 
-                <td>{report.category}</td>
+                <td>{report.Category}</td>
 
-                <td>{report.generatedBy}</td>
+                <td>{report.GeneratedBy}</td>
 
-                <td>{report.date}</td>
+                <td>{report.Date ? new Date(report.Date).toLocaleDateString() : "-"}</td>
 
                 <td>
 
                   <span
-                    className={`status ${report.status
+                    className={`status ${(report.Status || "")
                       .toLowerCase()
                       .replace(/\s/g, "-")}`}
                   >
 
-                    {report.status}
+                    {report.Status}
 
                   </span>
 
@@ -342,7 +317,7 @@ function Reports() {
 
                   </button>
 
-                  <button className="action delete">
+                  <button className="action delete" onClick={() => handleDelete(report._id)} aria-label={`Delete ${report.ReportName}`}>
 
                     <HiTrash />
 
