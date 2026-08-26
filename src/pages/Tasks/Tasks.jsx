@@ -1,6 +1,7 @@
 import "./Tasks.css";
 import { useState } from "react";
 import { useEffect } from "react";
+import FormModal from "../../components/FormModal";
 
 import {
   HiMagnifyingGlass,
@@ -38,9 +39,25 @@ function Tasks() {
     fetchTasks();
   }, []);
 
+  const handleChange = (event) => setFormData((previous) => ({ ...previous, [event.target.name]: event.target.value }));
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setLoading(true);
+    try {
+      const response = await fetch("http://localhost:5000/tasks/add", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(formData) });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to add task");
+      setShowForm(false);
+      fetchTasks();
+    } catch (error) { alert(error.message); } finally { setLoading(false); }
+  };
+
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [priorityFilter, setPriorityFilter] = useState("");
+  const [showForm, setShowForm] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({ Name: "", Project: "", AssignedTo: "", Priority: "Medium", Status: "Pending", DueDate: "" });
   const filteredTasks = tasks.filter((task) => {
 
     const keyword = search.trim().toLowerCase();
@@ -66,8 +83,6 @@ function Tasks() {
            matchesPriority;
 
 });
-  console.log(filteredTasks);
-
     return (
 
     <div className="page-content">
@@ -86,7 +101,7 @@ function Tasks() {
 
         </div>
 
-        <button className="primary-btn">
+        <button className="primary-btn" onClick={() => setShowForm(true)}>
 
           <HiPlus />
 
@@ -95,6 +110,17 @@ function Tasks() {
         </button>
 
       </div>
+
+      {showForm && (
+        <FormModal title="New Task" onClose={() => setShowForm(false)} onSubmit={handleSubmit} submitLabel="Save Task" loading={loading}>
+          <div className="form-field"><label htmlFor="task-name">Task Name</label><input id="task-name" name="Name" value={formData.Name} onChange={handleChange} required /></div>
+          <div className="form-field"><label htmlFor="task-project">Project</label><input id="task-project" name="Project" value={formData.Project} onChange={handleChange} required /></div>
+          <div className="form-field"><label htmlFor="task-assignee">Assigned To</label><input id="task-assignee" name="AssignedTo" value={formData.AssignedTo} onChange={handleChange} required /></div>
+          <div className="form-field"><label htmlFor="task-priority">Priority</label><select id="task-priority" name="Priority" value={formData.Priority} onChange={handleChange}><option>High</option><option>Medium</option><option>Low</option></select></div>
+          <div className="form-field"><label htmlFor="task-status">Status</label><select id="task-status" name="Status" value={formData.Status} onChange={handleChange}><option>Pending</option><option>In Progress</option><option>Completed</option></select></div>
+          <div className="form-field"><label htmlFor="task-due-date">Due Date</label><input id="task-due-date" type="date" name="DueDate" value={formData.DueDate} onChange={handleChange} required /></div>
+        </FormModal>
+      )}
 
       {/* =========================
           TASK STATISTICS
@@ -243,17 +269,17 @@ function Tasks() {
 
               <tr key={task._id}>
 
-                <td>{task.name}</td>
+                <td>{task.Name}</td>
 
-                <td>{task.project}</td>
+                <td>{task.Project}</td>
 
-                <td>{task.assignedTo}</td>
+                <td>{task.AssignedTo}</td>
 
                 <td>
 
-                  <span className={`priority ${(task.priority || "").toLowerCase().replace(/\s/g, "-")}`}>
+                  <span className={`priority ${(task.Priority || "").toLowerCase().replace(/\s/g, "-")}`}>
 
-                    {task.priority}
+                    {task.Priority}
 
                   </span>
 
@@ -262,12 +288,12 @@ function Tasks() {
                 <td>
 
                   <span
-                    className={`status ${task.status
+                    className={`status ${(task.Status || "")
                       .toLowerCase()
                       .replace(/\s/g, "-")}`}
                   >
 
-                    {task.status}
+                    {task.Status}
 
                   </span>
 
@@ -277,7 +303,7 @@ function Tasks() {
 
                     <span className="due-date">
 
-                        {new Date(task.dueDate).toLocaleDateString()}
+                        {task.DueDate ? new Date(task.DueDate).toLocaleDateString() : "-"}
 
                     </span>
 

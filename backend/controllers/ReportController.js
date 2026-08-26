@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Reports from "../models/ReportsModel";
+import Reports from "../models/ReportsModel.js";
 
 
 export async function generateReport(req, res) {
@@ -14,6 +14,17 @@ export async function getReports(req, res) {
     try {
         const reports = await Reports.find();
         res.status(200).json(reports);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+export async function getReportByID(req, res) {
+    try {
+        const report = await Reports.findById(req.params.id);
+        if (!report) {
+            return res.status(404).json({ message: "Report not found" });
+        }
+        res.status(200).json(report);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

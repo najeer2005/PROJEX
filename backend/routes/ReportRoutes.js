@@ -1,9 +1,9 @@
 import express from "express";
-import { createReport, updateReport, deleteReport, getReports, getReportByID } from "../controllers/ReportController.js";       
+import { generateReport, updateReport, deleteReport, getReports, getReportByID } from "../controllers/ReportController.js";
 
 const router = express.Router();
 
-router.post("/add", createReport);
+router.post("/add", generateReport);
 router.put("/update/:id", updateReport);
 router.delete("/delete/:id", deleteReport);
 router.get("/", getReports);

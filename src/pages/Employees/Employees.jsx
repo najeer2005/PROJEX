@@ -1,6 +1,7 @@
 import "./Employees.css";
 import { useState } from "react";
 import { useEffect } from "react";
+import FormModal from "../../components/FormModal";
 
 import {
   HiMagnifyingGlass,
@@ -21,6 +22,9 @@ function Employees() {
   ========================= */
 
   const [employees, setEmployees] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({ Employee: "", EmployeeID: "", Department: "Frontend", Role: "", Status: "Available", Projects: 0 });
   const employeeStats = {
   total: employees.length,
   active: employees.filter((e) => e.Status === "Active").length,
@@ -40,6 +44,23 @@ function Employees() {
   useEffect(() => {
     fetchEmployees();
   }, []);
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((previous) => ({ ...previous, [name]: name === "Projects" ? Number(value) : value }));
+  };
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setLoading(true);
+    try {
+      const response = await fetch("http://localhost:5000/employees/add", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(formData) });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to add employee");
+      setShowForm(false);
+      setFormData({ Employee: "", EmployeeID: "", Department: "Frontend", Role: "", Status: "Available", Projects: 0 });
+      fetchEmployees();
+    } catch (error) { alert(error.message); } finally { setLoading(false); }
+  };
 
   /* =========================
       EMPLOYEE DATA
@@ -93,7 +114,7 @@ console.log("Filtered Employees:", filteredEmployees);
 
         </div>
 
-        <button className="primary-btn">
+        <button className="primary-btn" onClick={() => setShowForm(true)}>
 
           <HiPlus />
 
@@ -102,6 +123,17 @@ console.log("Filtered Employees:", filteredEmployees);
         </button>
 
       </div>
+
+      {showForm && (
+        <FormModal title="Add Employee" onClose={() => setShowForm(false)} onSubmit={handleSubmit} submitLabel="Save Employee" loading={loading}>
+          <div className="form-field"><label htmlFor="employee-name">Employee Name</label><input id="employee-name" name="Employee" value={formData.Employee} onChange={handleChange} required /></div>
+          <div className="form-field"><label htmlFor="employee-id">Employee ID</label><input id="employee-id" name="EmployeeID" value={formData.EmployeeID} onChange={handleChange} required /></div>
+          <div className="form-field"><label htmlFor="employee-department">Department</label><select id="employee-department" name="Department" value={formData.Department} onChange={handleChange}><option>Frontend</option><option>Backend</option><option>UI/UX</option><option>QA</option><option>DevOps</option></select></div>
+          <div className="form-field"><label htmlFor="employee-role">Role</label><input id="employee-role" name="Role" value={formData.Role} onChange={handleChange} required /></div>
+          <div className="form-field"><label htmlFor="employee-status">Status</label><select id="employee-status" name="Status" value={formData.Status} onChange={handleChange}><option>Active</option><option>Available</option><option>On Leave</option></select></div>
+          <div className="form-field"><label htmlFor="employee-projects">Projects</label><input id="employee-projects" type="number" min="0" name="Projects" value={formData.Projects} onChange={handleChange} /></div>
+        </FormModal>
+      )}
 
       {/* =========================
           EMPLOYEE STATISTICS

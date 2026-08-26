@@ -1,4 +1,6 @@
 import "./Calendar.css";
+import { useState } from "react";
+import FormModal from "../../components/FormModal";
 
 import {
   HiMagnifyingGlass,
@@ -10,6 +12,8 @@ import {
 } from "react-icons/hi2";
 
 function Calendar() {
+  const [showForm, setShowForm] = useState(false);
+  const [eventData, setEventData] = useState({ title: "", date: "", time: "", type: "Meeting" });
 
   /* =========================
       CALENDAR STATISTICS
@@ -31,7 +35,7 @@ function Calendar() {
       TODAY'S EVENTS
   ========================= */
 
-  const todayEvents = [
+  const [todayEvents, setTodayEvents] = useState([
 
     {
       id: 1,
@@ -54,7 +58,15 @@ function Calendar() {
       type: "Deadline",
     },
 
-  ];
+  ]);
+
+  const handleChange = (event) => setEventData((previous) => ({ ...previous, [event.target.name]: event.target.value }));
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    setTodayEvents((previous) => [...previous, { id: Date.now(), ...eventData }]);
+    setEventData({ title: "", date: "", time: "", type: "Meeting" });
+    setShowForm(false);
+  };
 
   /* =========================
       CALENDAR DAYS
@@ -91,7 +103,7 @@ function Calendar() {
 
         </div>
 
-        <button className="primary-btn">
+        <button className="primary-btn" onClick={() => setShowForm(true)}>
 
           <HiPlus />
 
@@ -100,6 +112,15 @@ function Calendar() {
         </button>
 
       </div>
+
+      {showForm && (
+        <FormModal title="Add Event" onClose={() => setShowForm(false)} onSubmit={handleSubmit} submitLabel="Save Event">
+          <div className="form-field full-width"><label htmlFor="event-title">Event Title</label><input id="event-title" name="title" value={eventData.title} onChange={handleChange} required /></div>
+          <div className="form-field"><label htmlFor="event-date">Date</label><input id="event-date" type="date" name="date" value={eventData.date} onChange={handleChange} required /></div>
+          <div className="form-field"><label htmlFor="event-time">Time</label><input id="event-time" type="time" name="time" value={eventData.time} onChange={handleChange} required /></div>
+          <div className="form-field full-width"><label htmlFor="event-type">Event Type</label><select id="event-type" name="type" value={eventData.type} onChange={handleChange}><option>Meeting</option><option>Deadline</option><option>Holiday</option></select></div>
+        </FormModal>
+      )}
 
       {/* =========================
           CALENDAR STATISTICS

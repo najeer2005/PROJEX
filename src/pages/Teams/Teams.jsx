@@ -1,5 +1,6 @@
 import "./Teams.css";
 import { useState, useEffect } from "react";
+import FormModal from "../../components/FormModal";
 
 import {
   HiMagnifyingGlass,
@@ -18,6 +19,9 @@ function Teams() {
   const [search, setSearch] = useState("");
   const [departmentFilter, setDepartmentFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const [showForm, setShowForm] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({ Team: "", TeamLead: "", Department: "Engineering", Members: 1, Projects: 0, Status: "Planning" });
 
   /* =========================
       TEAM STATISTICS
@@ -46,6 +50,23 @@ const teamStats = {
   useEffect(() => {
     fetchTeams();
   }, []);
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((previous) => ({ ...previous, [name]: ["Members", "Projects"].includes(name) ? Number(value) : value }));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setLoading(true);
+    try {
+      const response = await fetch("http://localhost:5000/teams/add", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(formData) });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to add team");
+      setShowForm(false);
+      fetchTeams();
+    } catch (error) { alert(error.message); } finally { setLoading(false); }
+  };
 
   const filteredTeams = teams.filter((team)=>{
 
@@ -88,7 +109,7 @@ matchesStatus;
 
         </div>
 
-        <button className="primary-btn">
+        <button className="primary-btn" onClick={() => setShowForm(true)}>
 
           <HiPlus />
 
@@ -97,6 +118,17 @@ matchesStatus;
         </button>
 
       </div>
+
+      {showForm && (
+        <FormModal title="Add Team" onClose={() => setShowForm(false)} onSubmit={handleSubmit} submitLabel="Save Team" loading={loading}>
+          <div className="form-field"><label htmlFor="team-name">Team Name</label><input id="team-name" name="Team" value={formData.Team} onChange={handleChange} required /></div>
+          <div className="form-field"><label htmlFor="team-lead">Team Lead</label><input id="team-lead" name="TeamLead" value={formData.TeamLead} onChange={handleChange} required /></div>
+          <div className="form-field"><label htmlFor="team-department">Department</label><select id="team-department" name="Department" value={formData.Department} onChange={handleChange}><option>Engineering</option><option>Design</option><option>Quality Assurance</option><option>Infrastructure</option></select></div>
+          <div className="form-field"><label htmlFor="team-status">Status</label><select id="team-status" name="Status" value={formData.Status} onChange={handleChange}><option>Active</option><option>Planning</option><option>Maintenance</option><option>In-Progress</option></select></div>
+          <div className="form-field"><label htmlFor="team-members">Members</label><input id="team-members" type="number" min="0" name="Members" value={formData.Members} onChange={handleChange} required /></div>
+          <div className="form-field"><label htmlFor="team-projects">Projects</label><input id="team-projects" type="number" min="0" name="Projects" value={formData.Projects} onChange={handleChange} required /></div>
+        </FormModal>
+      )}
 
       {/* =========================
           TEAM STATISTICS

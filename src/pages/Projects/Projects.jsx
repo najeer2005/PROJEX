@@ -1,6 +1,7 @@
 import "./Projects.css";
 import { useState } from "react";
 import { useEffect } from "react";
+import ProjectModal from "./ProjectModal";
 
 import {
   HiMagnifyingGlass,

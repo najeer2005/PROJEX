@@ -3,7 +3,7 @@ import teams from "../models/Teams.js";
 export async function createTeam(req, res) {
 
     try {
-        const team = await Team.create(req.body);
+        const team = await teams.create(req.body);
         res.status(201).json(team);
     } catch (error) {
         res.status(404).json({ message: error.message });
