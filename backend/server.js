@@ -9,6 +9,8 @@ import teamsRoutes from "./routes/teamsRoutes.js";
 import BugTrackerRoutes from "./routes/BugTrackerRoutes.js";
 import EmployeeRoutes from "./routes/EmployeeRoutes.js";
 import ReportRoutes from "./routes/ReportRoutes.js";
+import authenticationRoutes from "./routes/authenticationRoutes.js";
+import authMiddleware from "./middleware/authMiddleware.js";
 
 
 dotenv.config();
@@ -28,9 +30,13 @@ app.get("/", (req, res) => {
 });
 
 
-// Routes
-app.use("/tasks", tasksRoutes);
+// Public routes
+app.use("/auth", authenticationRoutes);
 app.use("/register", registerRoutes);
+
+// Protected routes
+app.use(authMiddleware);
+app.use("/tasks", tasksRoutes);
 app.use("/projects",projectsRoutes);
 app.use("/teams", teamsRoutes);
 app.use("/bugreports",BugTrackerRoutes);
