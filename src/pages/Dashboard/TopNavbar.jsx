@@ -13,6 +13,7 @@ import {
 } from "react-icons/hi2";
 
 function TopNavbar() {
+  
 
   const { search, setSearch } = useContext(SearchContext);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -30,34 +31,28 @@ const [notifications] = useState([
   ]);
 
   function handleSearch() {
-  if (search.trim().toLowerCase() === "projects"){
-    navigate("/projects");
-  }
-  else if (search.trim().toLowerCase() === "tasks"){
-    navigate("/tasks");
-  }
-  else if (search.trim().toLowerCase()==="employees" ){
-    navigate("/employees")
-  }
-  else if (search.trim().toLowerCase() === "teams"){
-    navigate("/teams");
-  }
-  else if(search.trim().toLowerCase() === "bugs" || search.trim().toLowerCase() ==="bugreport" ){
-    navigate("/bugs");
-  }
-  else if (search.trim().toLowerCase() ==="reports"){
-    navigate("/reports")
-  }
-  else if (search.trim().toLowerCase() ==="calender"){
-    navigate("/calender");
-  }
-  else{
-    navigate("/dashboard");
-  }
+    const query = (search || "").trim().toLowerCase();
 
-  console.log("Searching:", value);
+    if (query === "projects") {
+      navigate("/projects");
+    } else if (query === "tasks") {
+      navigate("/tasks");
+    } else if (query === "employees") {
+      navigate("/employees");
+    } else if (query === "teams") {
+      navigate("/teams");
+    } else if (query === "bugs" || query === "bugreport") {
+      navigate("/bugs");
+    } else if (query === "reports") {
+      navigate("/reports");
+    } else if (query === "calendar" || query === "calender") {
+      navigate("/calendar");
+    } else {
+      navigate("/dashboard");
+    }
 
-}
+    console.log("Searching:", query);
+  }
 
   return (
     <header className="top-navbar">
@@ -118,27 +113,31 @@ const [notifications] = useState([
 
         <div className="new-dropdown">
 
-            <button onClick={() => navigate("/projects")}>
+            <button onClick={() => navigate("/projects/newproject")}>
                 📁 New Project
             </button>
 
-            <button onClick={() => navigate("/tasks")}>
+            <button onClick={() => navigate("/tasks/new")}>
                 ✅ New Task
             </button>
 
-            <button onClick={() => navigate("/employees")}>
+            <button onClick={() => navigate("/employees/new")}>
                 👤 New Employee
             </button>
 
-            <button onClick={() => navigate("/teams")}>
+            <button onClick={() => navigate("/teams/new")}>
                 👥 New Team
             </button>
 
-            <button onClick={() => navigate("/bugs")}>
+            <button onClick={() => navigate("/bugs/new")}>
                 🐞 Report Bug
             </button>
 
-            <button onClick={() => navigate("/calendar")}>
+            <button onClick={() => navigate("/reports/new")}>
+                📊 New Report
+            </button>
+
+            <button onClick={() => navigate("/calendar/new")}>
                 📅 New Event
             </button>
 
@@ -187,11 +186,7 @@ const [notifications] = useState([
 
 )}
 
-        <button className="icon-btn">
-
-          <HiCog6Tooth />
-        
-        </button>
+       
       <div className="profile-wrapper" ref={profileRef}>
         <button className="profile-btn"
         onClick={() => setShowProfile(!showProfile)}
@@ -210,7 +205,11 @@ const [notifications] = useState([
           <div className="profile-dropdown">
             <button className="dropdown-item">Profile</button>
             <button className="dropdown-item">Settings</button>
-            <button className="dropdown-item" onClick={(e)=>{navigate("/login")}}>Logout</button>
+            <button className="dropdown-item" onClick={() => {
+              localStorage.removeItem("token");
+              localStorage.removeItem("user");
+              navigate("/login", { replace: true });
+            }}>Logout</button>
           </div>
         )}
       </div>

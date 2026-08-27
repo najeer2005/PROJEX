@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./Login.css";
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
 function Login() {
 
     const [email, setEmail] = useState("");
@@ -10,6 +11,12 @@ function Login() {
     const [errors, setErrors] = useState({});
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (localStorage.getItem("token")) {
+            navigate("/dashboard", { replace: true });
+        }
+    }, [navigate]);
 
     function validateForm() {
 
@@ -43,31 +50,31 @@ function Login() {
     return Object.keys(newErrors).length === 0;
 
 }
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
     e.preventDefault();
     if (!validateForm()) {
-
-    return;
-
-}
-
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-
-    // Check if any account exists
-    if (!storedUser) {
-        alert("Please create an account first.");
         return;
     }
 
-    // Validate credentials
-    if (
-        email.trim() === storedUser.officialEmail.trim() &&
-        password === storedUser.password
-    ) {
+    try {
+        const response = await fetch("http://localhost:5000/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ officialEmail: email, password }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || "Invalid Email or Password!");
+        }
+
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
         alert("Login Successful!");
-        navigate("/dashboard");
-    } else {
-        alert("Invalid Email or Password!");
+        navigate("/dashboard", { replace: true });
+    } catch (error) {
+        alert(error.message);
     }
 }
 

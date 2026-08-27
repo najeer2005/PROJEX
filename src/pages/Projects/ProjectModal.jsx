@@ -1,7 +1,9 @@
 import { useState } from "react";
 import "./ProjectModal.css";
+import { useNavigate } from "react-router-dom";
+import { apiFetch } from "../../api/api";
 
-function ProjectModal({ onClose, onProjectAdded }) {
+function ProjectForm({ onClose, onProjectAdded }) {
   const [formData, setFormData] = useState({
     name: "",
     manager: "",
@@ -10,6 +12,8 @@ function ProjectModal({ onClose, onProjectAdded }) {
     priority: "Medium",
     progress: 0,
   });
+
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
 
@@ -28,7 +32,7 @@ function ProjectModal({ onClose, onProjectAdded }) {
     try {
       setLoading(true);
 
-      const response = await fetch("http://localhost:5000/projects/add", {
+      const response = await apiFetch("http://localhost:5000/projects/add", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -152,7 +156,7 @@ function ProjectModal({ onClose, onProjectAdded }) {
             <button
               type="button"
               className="cancel-btn"
-              onClick={onClose}
+              onClick={() => navigate('/projects')}
             >
               Cancel
             </button>
@@ -175,4 +179,4 @@ function ProjectModal({ onClose, onProjectAdded }) {
   );
 }
 
-export default ProjectModal;
+export default ProjectForm;

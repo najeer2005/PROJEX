@@ -1,10 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./Register.css";
 import { Link, useNavigate } from "react-router-dom";
 
 function Register() {
     const navigate = useNavigate();
 
+    useEffect(() => {
+        if (localStorage.getItem("token")) {
+            navigate("/dashboard", { replace: true });
+        }
+    }, [navigate]);
 
     const [fullName, setFullName] = useState("");
     const [employeeId, setEmployeeId] = useState("");
@@ -40,8 +45,8 @@ function Register() {
         newErrors.phoneNumber = "Enter a valid 10-digit phone number";
     }
 
-    if (!passwordRegex.test(password)) {
-        newErrors.password = "Choose a strong password";
+    if (!password.trim() || password.trim().length < 8) {
+        newErrors.password = "Choose a strong password (at least 8 characters)";
     }
 
     if (!confirmPassword.trim()) {
@@ -56,7 +61,7 @@ function Register() {
 
 }
 
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
 
     e.preventDefault();
 
@@ -64,27 +69,39 @@ function Register() {
         return;
     }
 
-    const user = {
-        fullName,
-        employeeId,
-        officialEmail,
-        phoneNumber,
-        password,
-    };
+    try {
+        const response = await fetch("http://localhost:5000/auth/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                fullName,
+                employeeId,
+                officialEmail,
+                phoneNumber,
+                password,
+            }),
+        });
 
-    localStorage.setItem("user", JSON.stringify(user));
+        const data = await response.json();
 
-    alert("🎉 Account created successfully!");
+        if (!response.ok) {
+            throw new Error(data.message || "Registration failed");
+        }
 
-    setFullName("");
-    setEmployeeId("");
-    setOfficialEmail("");
-    setPhoneNumber("");
-    setPassword("");
-    setConfirmPassword("");
-    setErrors({});
+        alert("🎉 Account created successfully!");
 
-    navigate("/login");
+        setFullName("");
+        setEmployeeId("");
+        setOfficialEmail("");
+        setPhoneNumber("");
+        setPassword("");
+        setConfirmPassword("");
+        setErrors({});
+
+        navigate("/login");
+    } catch (error) {
+        alert(error.message);
+    }
 }
 
     return (

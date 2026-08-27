@@ -1,6 +1,7 @@
 import "./Teams.css";
 import { useState, useEffect } from "react";
-import FormModal from "../../components/FormModal";
+import TeamForm from "./TeamForm";
+import { apiFetch } from "../../api/api";
 
 import {
   HiMagnifyingGlass,
@@ -40,7 +41,7 @@ const teamStats = {
   async function fetchTeams() {
 
     try {
-      const response = await fetch("http://localhost:5000/teams");
+      const response = await apiFetch("http://localhost:5000/teams");
       const data = await response.json();
       setTeams(data);
     } catch (error) {
@@ -54,7 +55,7 @@ const teamStats = {
   const handleDelete = async (teamId) => {
     if (!window.confirm("Delete this team?")) return;
     try {
-      const response = await fetch(`http://localhost:5000/teams/delete/${teamId}`, { method: "DELETE" });
+      const response = await apiFetch(`http://localhost:5000/teams/delete/${teamId}`, { method: "DELETE" });
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || "Failed to delete team");
       setTeams((previous) => previous.filter((team) => team._id !== teamId));
@@ -70,7 +71,7 @@ const teamStats = {
     event.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/teams/add", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(formData) });
+      const response = await apiFetch("http://localhost:5000/teams/add", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(formData) });
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || "Failed to add team");
       setShowForm(false);
@@ -130,14 +131,13 @@ matchesStatus;
       </div>
 
       {showForm && (
-        <FormModal title="Add Team" onClose={() => setShowForm(false)} onSubmit={handleSubmit} submitLabel="Save Team" loading={loading}>
-          <div className="form-field"><label htmlFor="team-name">Team Name</label><input id="team-name" name="Team" value={formData.Team} onChange={handleChange} required /></div>
-          <div className="form-field"><label htmlFor="team-lead">Team Lead</label><input id="team-lead" name="TeamLead" value={formData.TeamLead} onChange={handleChange} required /></div>
-          <div className="form-field"><label htmlFor="team-department">Department</label><select id="team-department" name="Department" value={formData.Department} onChange={handleChange}><option>Engineering</option><option>Design</option><option>Quality Assurance</option><option>Infrastructure</option></select></div>
-          <div className="form-field"><label htmlFor="team-status">Status</label><select id="team-status" name="Status" value={formData.Status} onChange={handleChange}><option>Active</option><option>Planning</option><option>Maintenance</option><option>In-Progress</option></select></div>
-          <div className="form-field"><label htmlFor="team-members">Members</label><input id="team-members" type="number" min="0" name="Members" value={formData.Members} onChange={handleChange} required /></div>
-          <div className="form-field"><label htmlFor="team-projects">Projects</label><input id="team-projects" type="number" min="0" name="Projects" value={formData.Projects} onChange={handleChange} required /></div>
-        </FormModal>
+        <TeamForm
+          formData={formData}
+          onChange={handleChange}
+          onSubmit={handleSubmit}
+          onClose={() => setShowForm(false)}
+          loading={loading}
+        />
       )}
 
       {/* =========================

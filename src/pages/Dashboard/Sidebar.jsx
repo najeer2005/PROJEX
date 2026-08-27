@@ -124,13 +124,18 @@ function Sidebar() {
                     <span>Settings</span>
                 </NavLink>
 
-                <NavLink
-                    to="/login"
+                <button
+                    type="button"
                     className="sidebar-link logout"
+                    onClick={() => {
+                        localStorage.removeItem("token");
+                        localStorage.removeItem("user");
+                        window.location.href = "/login";
+                    }}
                 >
                     <HiArrowLeftOnRectangle />
                     <span>Logout</span>
-                </NavLink>
+                </button>
 
             </div>
 

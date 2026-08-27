@@ -1,5 +1,7 @@
 import "./Dashboard.css";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { apiFetch } from "../../api/api";
 import {
   HiFolderOpen,
   HiClipboardDocumentList,
@@ -15,17 +17,18 @@ import {
 const apiUrl = "http://localhost:5000";
 
 function Dashboard() {
+  const navigate = useNavigate();
   const [dashboardData, setDashboardData] = useState({ projects: [], tasks: [], bugs: [], employees: [], teams: [] });
 
   useEffect(() => {
     const loadDashboard = async () => {
       try {
         const responses = await Promise.all([
-          fetch(`${apiUrl}/projects`),
-          fetch(`${apiUrl}/tasks`),
-          fetch(`${apiUrl}/bugreports`),
-          fetch(`${apiUrl}/employees`),
-          fetch(`${apiUrl}/teams`),
+          apiFetch(`${apiUrl}/projects`),
+          apiFetch(`${apiUrl}/tasks`),
+          apiFetch(`${apiUrl}/bugreports`),
+          apiFetch(`${apiUrl}/employees`),
+          apiFetch(`${apiUrl}/teams`),
         ]);
         const [projects, tasks, bugs, employees, teams] = await Promise.all(responses.map((response) => response.json()));
         setDashboardData({ projects: projects.projects || [], tasks, bugs: bugs.bugReports || [], employees, teams });
@@ -64,21 +67,22 @@ function Dashboard() {
   const formatDate = (date) => date ? new Date(date).toLocaleDateString("en-GB", { day: "2-digit", month: "short" }) : "-";
   const today = new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
 
+  const handleViewAll = (page) => navigate(page);
+
   return (
     <div className="dashboard">
       <div className="dashboard-header"><div><h2>Dashboard</h2><p>Project Delivery Overview</p></div><div className="dashboard-date"><HiCalendarDays /><span>{today}</span></div></div>
       <section className="stats-grid">{cards.map((card) => <div className="stat-card" key={card.title}><div className={`stat-icon ${card.color}`}>{card.icon}</div><h2>{card.value}</h2><h4>{card.title}</h4><p><HiArrowTrendingUp className="trend-icon" />{card.subtitle}</p></div>)}</section>
       <section className="dashboard-grid">
-        <div className="dashboard-card"><div className="card-header"><h3>Recent Tasks</h3><button>View All</button></div><div className="task-list">{recentTasks.map((task) => <div className="task-item" key={task._id}><div className="task-left"><strong>{task.Name}</strong><span>Assigned to {task.AssignedTo}</span></div><div className="task-right"><span className={`priority ${(task.Priority || "").toLowerCase()}`}>{task.Priority}</span><small>{task.Status}</small></div></div>)}</div></div>
-        <div className="dashboard-card"><div className="card-header"><h3>Recent Activity</h3><button>View All</button></div><div className="activity-list">{recentActivity.map((activity, index) => <div className="activity-item" key={`${activity.action}-${index}`}><div className="activity-icon"><HiBolt /></div><div className="activity-content"><strong>{activity.user}</strong><p>{activity.action}</p></div><small>{formatDate(activity.date)}</small></div>)}</div></div>
+        <div className="dashboard-card"><div className="card-header"><h3>Recent Tasks</h3><button onClick={() => handleViewAll("/tasks")}>View All</button></div><div className="task-list">{recentTasks.map((task) => <div className="task-item" key={task._id}><div className="task-left"><strong>{task.Name}</strong><span>Assigned to {task.AssignedTo}</span></div><div className="task-right"><span className={`priority ${(task.Priority || "").toLowerCase()}`}>{task.Priority}</span><small>{task.Status}</small></div></div>)}</div></div>
+        <div className="dashboard-card"><div className="card-header"><h3>Recent Activity</h3><button onClick={() => handleViewAll("/reports")}>View All</button></div><div className="activity-list">{recentActivity.map((activity, index) => <div className="activity-item" key={`${activity.action}-${index}`}><div className="activity-icon"><HiBolt /></div><div className="activity-content"><strong>{activity.user}</strong><p>{activity.action}</p></div><small>{formatDate(activity.date)}</small></div>)}</div></div>
       </section>
       <section className="dashboard-grid">
-        <div className="dashboard-card"><div className="card-header"><h3>Active Projects</h3><button>View All</button></div><div className="project-list">{activeProjects.map((project) => <div className="project-item" key={project._id}><div className="project-details"><strong>{project.name}</strong><span>{project.status}</span></div><div className="project-progress"><div className="progress-bar"><div className="progress-fill" style={{ width: `${project.progress || 0}%` }} /></div><small>{project.progress || 0}%</small></div></div>)}</div></div>
-        <div className="dashboard-card"><div className="card-header"><h3>Team Performance</h3><button>View All</button></div><div className="team-list">{teamPerformance.map((member) => <div className="team-item" key={member.name}><div className="team-avatar">{(member.name || "?").charAt(0)}</div><div className="team-details"><strong>{member.name}</strong><span>{member.tasks} Tasks Assigned</span></div><HiUserGroup className="team-icon" /></div>)}</div></div>
+        <div className="dashboard-card"><div className="card-header"><h3>Active Projects</h3><button onClick={() => handleViewAll("/projects")}>View All</button></div><div className="project-list">{activeProjects.map((project) => <div className="project-item" key={project._id}><div className="project-details"><strong>{project.name}</strong><span>{project.status}</span></div><div className="project-progress"><div className="progress-bar"><div className="progress-fill" style={{ width: `${project.progress || 0}%` }} /></div><small>{project.progress || 0}%</small></div></div>)}</div></div>
+        <div className="dashboard-card"><div className="card-header"><h3>Team Performance</h3><button onClick={() => handleViewAll("/teams")}>View All</button></div><div className="team-list">{teamPerformance.map((member) => <div className="team-item" key={member.name}><div className="team-avatar">{(member.name || "?").charAt(0)}</div><div className="team-details"><strong>{member.name}</strong><span>{member.tasks} Tasks Assigned</span></div><HiUserGroup className="team-icon" /></div>)}</div></div>
       </section>
       <section className="third-grid">
-        <div className="dashboard-card"><div className="card-header"><h3>Upcoming Deadlines</h3><button>View All</button></div><div className="deadline-list">{deadlines.map((task) => <div className="deadline-item" key={task._id}><div className="deadline-info"><strong>{task.Name}</strong><span>{task.Project}</span></div><div className="deadline-date">{formatDate(task.DueDate)}</div></div>)}</div></div>
-        <div className="dashboard-card"><div className="card-header"><h3>Quick Actions</h3></div><div className="quick-actions"><button className="action-btn">+ New Project</button><button className="action-btn">+ New Task</button><button className="action-btn">+ Add Employee</button><button className="action-btn">+ Report Bug</button></div></div>
+        <div className="dashboard-card"><div className="card-header"><h3>Upcoming Deadlines</h3><button onClick={() => handleViewAll("/calendar")}>View All</button></div><div className="deadline-list">{deadlines.map((task) => <div className="deadline-item" key={task._id}><div className="deadline-info"><strong>{task.Name}</strong><span>{task.Project}</span></div><div className="deadline-date">{formatDate(task.DueDate)}</div></div>)}</div></div>
       </section>
     </div>
   );

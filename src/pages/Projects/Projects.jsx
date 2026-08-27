@@ -2,6 +2,7 @@ import "./Projects.css";
 import { useState } from "react";
 import { useEffect } from "react";
 import ProjectModal from "./ProjectModal";
+import { apiFetch } from "../../api/api";
 
 import {
   HiMagnifyingGlass,
@@ -12,6 +13,7 @@ import {
   HiClock,
   HiCheckCircle,
 } from "react-icons/hi2";
+import ProjectForm from "./ProjectModal";
 
 function Projects() {
   const [projects,SetProjects] = useState([]);
@@ -25,7 +27,7 @@ function Projects() {
   
   async function fetchProjects() {
     try {
-      const response = await fetch("http://localhost:5000/projects");
+      const response = await apiFetch("http://localhost:5000/projects");
       const data = await response.json();
       SetProjects(data.projects || []);
     } catch (error) {
@@ -39,7 +41,7 @@ function Projects() {
   const handleDelete = async (projectId) => {
     if (!window.confirm("Delete this project?")) return;
     try {
-      const response = await fetch(`http://localhost:5000/projects/delete/${projectId}`, { method: "DELETE" });
+      const response = await apiFetch(`http://localhost:5000/projects/delete/${projectId}`, { method: "DELETE" });
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || "Failed to delete project");
       SetProjects((previous) => previous.filter((project) => project._id !== projectId));
@@ -305,7 +307,7 @@ console.log(projects);
 
       </div>
       {showModal && (
-    <ProjectModal
+    <ProjectForm
       onClose={() => setShowModal(false)}
       onProjectAdded={fetchProjects}
     />

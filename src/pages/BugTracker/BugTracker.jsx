@@ -1,6 +1,7 @@
 import "./BugTracker.css";
 import { useState, useEffect } from "react";
-import FormModal from "../../components/FormModal";
+import BugForm from "./BugForm";
+import { apiFetch } from "../../api/api";
 
 import {
   HiMagnifyingGlass,
@@ -42,7 +43,7 @@ useEffect(() => {
 
 async function fetchBugs() {
   try {
-    const response = await fetch("http://localhost:5000/bugreports");
+    const response = await apiFetch("http://localhost:5000/bugreports");
     const data = await response.json();
 
     console.log(data);
@@ -55,7 +56,7 @@ async function fetchBugs() {
 const handleDelete = async (bugId) => {
   if (!window.confirm("Delete this bug report?")) return;
   try {
-    const response = await fetch(`http://localhost:5000/bugreports/delete/${bugId}`, { method: "DELETE" });
+    const response = await apiFetch(`http://localhost:5000/bugreports/delete/${bugId}`, { method: "DELETE" });
     const data = await response.json();
     if (!response.ok) throw new Error(data.message || "Failed to delete bug report");
     setBugs((previous) => previous.filter((bug) => bug._id !== bugId));
@@ -66,7 +67,7 @@ const handleSubmit = async (event) => {
   event.preventDefault();
   setLoading(true);
   try {
-    const response = await fetch("http://localhost:5000/bugreports/add", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(formData) });
+    const response = await apiFetch("http://localhost:5000/bugreports/add", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(formData) });
     const data = await response.json();
     if (!response.ok) throw new Error(data.message || "Failed to report bug");
     setShowForm(false);
@@ -112,14 +113,13 @@ const handleSubmit = async (event) => {
       </div>
 
       {showForm && (
-        <FormModal title="Report Bug" onClose={() => setShowForm(false)} onSubmit={handleSubmit} submitLabel="Save Bug" loading={loading}>
-          <div className="form-field full-width"><label htmlFor="bug-title">Bug Description</label><textarea id="bug-title" name="Bug" value={formData.Bug} onChange={handleChange} required /></div>
-          <div className="form-field"><label htmlFor="bug-project">Project</label><input id="bug-project" name="Project" value={formData.Project} onChange={handleChange} required /></div>
-          <div className="form-field"><label htmlFor="bug-assigned-to">Assigned To</label><input id="bug-assigned-to" name="AssignedTo" value={formData.AssignedTo} onChange={handleChange} required /></div>
-          <div className="form-field"><label htmlFor="bug-priority">Priority</label><select id="bug-priority" name="Priority" value={formData.Priority} onChange={handleChange}><option>High</option><option>Medium</option><option>Low</option></select></div>
-          <div className="form-field"><label htmlFor="bug-status">Status</label><select id="bug-status" name="Status" value={formData.Status} onChange={handleChange}><option>Open</option><option>In Progress</option><option>Resolved</option></select></div>
-          <div className="form-field full-width"><label htmlFor="bug-reported-by">Reported By</label><input id="bug-reported-by" name="ReportedBy" value={formData.ReportedBy} onChange={handleChange} required /></div>
-        </FormModal>
+        <BugForm
+          formData={formData}
+          onChange={handleChange}
+          onSubmit={handleSubmit}
+          onClose={() => setShowForm(false)}
+          loading={loading}
+        />
       )}
 
       {/* =========================

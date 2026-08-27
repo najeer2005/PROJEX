@@ -1,7 +1,8 @@
 import "./Tasks.css";
 import { useState } from "react";
 import { useEffect } from "react";
-import FormModal from "../../components/FormModal";
+import TaskForm from "./TaskForm";
+import { apiFetch } from "../../api/api";
 
 import {
   HiMagnifyingGlass,
@@ -28,7 +29,7 @@ function Tasks() {
 };
   async function fetchTasks() {
     try {
-      const response = await fetch("http://localhost:5000/tasks");
+      const response = await apiFetch("http://localhost:5000/tasks");
       const data = await response.json();
       setTasks(data);
     } catch (error) {
@@ -42,7 +43,7 @@ function Tasks() {
   const handleDelete = async (taskId) => {
     if (!window.confirm("Delete this task?")) return;
     try {
-      const response = await fetch(`http://localhost:5000/tasks/delete/${taskId}`, { method: "DELETE" });
+      const response = await apiFetch(`http://localhost:5000/tasks/delete/${taskId}`, { method: "DELETE" });
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || "Failed to delete task");
       setTasks((previous) => previous.filter((task) => task._id !== taskId));
@@ -54,7 +55,7 @@ function Tasks() {
     event.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/tasks/add", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(formData) });
+      const response = await apiFetch("http://localhost:5000/tasks/add", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(formData) });
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || "Failed to add task");
       setShowForm(false);
@@ -122,14 +123,13 @@ function Tasks() {
       </div>
 
       {showForm && (
-        <FormModal title="New Task" onClose={() => setShowForm(false)} onSubmit={handleSubmit} submitLabel="Save Task" loading={loading}>
-          <div className="form-field"><label htmlFor="task-name">Task Name</label><input id="task-name" name="Name" value={formData.Name} onChange={handleChange} required /></div>
-          <div className="form-field"><label htmlFor="task-project">Project</label><input id="task-project" name="Project" value={formData.Project} onChange={handleChange} required /></div>
-          <div className="form-field"><label htmlFor="task-assignee">Assigned To</label><input id="task-assignee" name="AssignedTo" value={formData.AssignedTo} onChange={handleChange} required /></div>
-          <div className="form-field"><label htmlFor="task-priority">Priority</label><select id="task-priority" name="Priority" value={formData.Priority} onChange={handleChange}><option>High</option><option>Medium</option><option>Low</option></select></div>
-          <div className="form-field"><label htmlFor="task-status">Status</label><select id="task-status" name="Status" value={formData.Status} onChange={handleChange}><option>Pending</option><option>In Progress</option><option>Completed</option></select></div>
-          <div className="form-field"><label htmlFor="task-due-date">Due Date</label><input id="task-due-date" type="date" name="DueDate" value={formData.DueDate} onChange={handleChange} required /></div>
-        </FormModal>
+        <TaskForm
+          formData={formData}
+          onChange={handleChange}
+          onSubmit={handleSubmit}
+          onClose={() => setShowForm(false)}
+          loading={loading}
+        />
       )}
 
       {/* =========================

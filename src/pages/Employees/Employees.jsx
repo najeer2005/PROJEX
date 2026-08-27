@@ -1,7 +1,8 @@
 import "./Employees.css";
 import { useState } from "react";
 import { useEffect } from "react";
-import FormModal from "../../components/FormModal";
+import EmployeeForm from "./EmployeeForm";
+import { apiFetch } from "../../api/api";
 
 import {
   HiMagnifyingGlass,
@@ -33,7 +34,7 @@ function Employees() {
 };
   async function fetchEmployees() {
     try {
-      const response = await fetch("http://localhost:5000/employees");
+      const response = await apiFetch("http://localhost:5000/employees");
       const data = await response.json();
       setEmployees(data);
       console.log(data);
@@ -48,7 +49,7 @@ function Employees() {
   const handleDelete = async (employeeId) => {
     if (!window.confirm("Delete this employee?")) return;
     try {
-      const response = await fetch(`http://localhost:5000/employees/delete/${employeeId}`, { method: "DELETE" });
+      const response = await apiFetch(`http://localhost:5000/employees/delete/${employeeId}`, { method: "DELETE" });
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || "Failed to delete employee");
       setEmployees((previous) => previous.filter((employee) => employee._id !== employeeId));
@@ -63,7 +64,7 @@ function Employees() {
     event.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/employees/add", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(formData) });
+      const response = await apiFetch("http://localhost:5000/employees/add", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(formData) });
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || "Failed to add employee");
       setShowForm(false);
@@ -135,14 +136,13 @@ console.log("Filtered Employees:", filteredEmployees);
       </div>
 
       {showForm && (
-        <FormModal title="Add Employee" onClose={() => setShowForm(false)} onSubmit={handleSubmit} submitLabel="Save Employee" loading={loading}>
-          <div className="form-field"><label htmlFor="employee-name">Employee Name</label><input id="employee-name" name="Employee" value={formData.Employee} onChange={handleChange} required /></div>
-          <div className="form-field"><label htmlFor="employee-id">Employee ID</label><input id="employee-id" name="EmployeeID" value={formData.EmployeeID} onChange={handleChange} required /></div>
-          <div className="form-field"><label htmlFor="employee-department">Department</label><select id="employee-department" name="Department" value={formData.Department} onChange={handleChange}><option>Frontend</option><option>Backend</option><option>UI/UX</option><option>QA</option><option>DevOps</option></select></div>
-          <div className="form-field"><label htmlFor="employee-role">Role</label><input id="employee-role" name="Role" value={formData.Role} onChange={handleChange} required /></div>
-          <div className="form-field"><label htmlFor="employee-status">Status</label><select id="employee-status" name="Status" value={formData.Status} onChange={handleChange}><option>Active</option><option>Available</option><option>On Leave</option></select></div>
-          <div className="form-field"><label htmlFor="employee-projects">Projects</label><input id="employee-projects" type="number" min="0" name="Projects" value={formData.Projects} onChange={handleChange} /></div>
-        </FormModal>
+        <EmployeeForm
+          formData={formData}
+          onChange={handleChange}
+          onSubmit={handleSubmit}
+          onClose={() => setShowForm(false)}
+          loading={loading}
+        />
       )}
 
       {/* =========================
